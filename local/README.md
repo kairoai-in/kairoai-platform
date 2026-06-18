@@ -25,4 +25,5 @@ Expected result:
 
 - API Gateway returns `202`.
 - Review Orchestrator creates a review row in PostgreSQL.
+- Review Orchestrator asks GitHub Service for Terraform-only changed files.
 - If `ENABLE_TASK_DISPATCH=true`, Review Orchestrator also dispatches the placeholder Celery task through RabbitMQ.

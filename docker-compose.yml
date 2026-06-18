@@ -42,6 +42,7 @@ services:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-amqp://kairoai:kairoai@rabbitmq:5672//}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-rpc://}
       ENABLE_TASK_DISPATCH: ${ENABLE_TASK_DISPATCH:-false}
+      GITHUB_SERVICE_URL: ${GITHUB_SERVICE_URL:-http://github-service:8000}
     ports:
       - "8001:8000"
     depends_on:
@@ -49,6 +50,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      github-service:
+        condition: service_started
 
   review-worker:
     build:
@@ -79,6 +82,18 @@ services:
       - "8000:8000"
     depends_on:
       - review-orchestrator
+
+  github-service:
+    build:
+      context: ../kairoai-github-service
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    environment:
+      ENVIRONMENT: local
+      GITHUB_API_BASE_URL: ${GITHUB_API_BASE_URL:-https://api.github.com}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    ports:
+      - "8002:8000"
 
 volumes:
   postgres-data:
