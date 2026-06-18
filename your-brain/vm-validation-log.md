@@ -46,3 +46,20 @@ Proof:
 
 - Review ID: `5bafa566-30dd-4da4-8d38-a7a97e873ec9`
 - Persisted Terraform file: `main.tf`
+
+## 2026-06-18 21:05:34 +05:30 - GitHub App Auth Tests
+
+Validated:
+
+- API Gateway webhook signature verification tests passed locally.
+- GitHub Service JWT and installation-token tests passed on the Azure VM.
+
+Results:
+
+- API Gateway tests: `4 passed`.
+- GitHub Service tests: `7 passed`.
+
+Notes:
+
+- GitHub Service tests were run on the VM because the local Windows Python environment does not have `PyJWT` and `cryptography` installed.
+- The real GitHub App has not been created yet.

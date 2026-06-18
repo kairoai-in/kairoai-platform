@@ -295,3 +295,20 @@ Impact:
 - Review Orchestrator now depends on `GITHUB_SERVICE_URL`.
 - The local stack includes GitHub Service.
 - A new `GET /reviews/{review_id}/terraform-files` endpoint exposes persisted Terraform files for the review.
+
+## 2026-06-18 21:05:34 +05:30 - Prepare Real GitHub App Integration
+
+Decision:
+
+- Add GitHub webhook signature verification in API Gateway.
+- Add GitHub App JWT generation and installation-token exchange in GitHub Service.
+
+Reason:
+
+- Before creating the real GitHub App, the platform needs secure webhook verification and installation-scoped GitHub API access.
+
+Impact:
+
+- API Gateway can validate `X-Hub-Signature-256` when `GITHUB_WEBHOOK_SECRET` is configured.
+- GitHub Service can generate GitHub App JWTs and exchange them for installation tokens.
+- The next milestone is creating the actual GitHub App in the GitHub organization and pointing its webhook URL at the VM/API Gateway.

@@ -54,6 +54,9 @@ Own all GitHub App interactions.
 
 - `GET /github/repos/{owner}/{repo}/pulls/{number}`
 - `GET /github/repos/{owner}/{repo}/pulls/{number}/files`
+- `GET /github/installations/{installationId}/repos/{owner}/{repo}/pulls/{number}`
+- GitHub App JWT generation.
+- GitHub App installation-token exchange.
 - Shared `PullRequestFile` contract.
 - Mocked GitHub API tests for PR metadata and changed files.
 

@@ -53,3 +53,10 @@ Provide the public entrypoint for KairoAI APIs and GitHub webhooks.
 
 - Incorrect webhook validation can allow forged events.
 - Public API must stay small until auth is designed.
+
+## Implemented
+
+- `POST /api/github/events` for pull request webhooks.
+- Supported pull request actions: `opened`, `synchronize`, `reopened`, `ready_for_review`.
+- Optional `X-Hub-Signature-256` verification when `GITHUB_WEBHOOK_SECRET` is configured.
+- Forwarding to Review Orchestrator review creation.
