@@ -161,3 +161,18 @@ Impact:
 - Each service repository should include GitHub Actions for linting, tests, Docker build, and image push.
 - Deployment automation should deploy image tags from ACR using Helm.
 - Local development should still support Docker Compose without depending on ACR.
+
+## 2026-06-18 19:10:05 +05:30 - Build Shared Contracts First
+
+Decision:
+
+- Start implementation by expanding `kairoai-shared` with the first real domain contracts and fixtures.
+
+Reason:
+
+- Every service depends on consistent payloads for reviews, repositories, pull requests, Terraform changes, findings, costs, governance results, scores, decisions, recommendations, and events.
+
+Impact:
+
+- `kairoai-shared` now acts as the contract spine for the rest of the platform.
+- API Gateway, GitHub Service, and Review Orchestrator should integrate these shared contracts next.
