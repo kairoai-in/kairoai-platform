@@ -368,3 +368,24 @@ Impact:
 - The current certificate expires on `2026-09-16 17:10:05 UTC`.
 - Certbot renewal is scheduled on the VM.
 - The next step is creating the GitHub App in `kairoai-in` and setting `GITHUB_WEBHOOK_SECRET`, `GITHUB_APP_ID`, and `GITHUB_APP_PRIVATE_KEY` in runtime configuration.
+
+## 2026-06-19 00:05:28 +05:30 - Wire GitHub App Runtime Secrets On VM
+
+Decision:
+
+- Store GitHub App runtime secrets in `/home/azureuser/kairoai/runtime.env` on the Azure VM with `600` permissions.
+- Start API Gateway, GitHub Service, Review Orchestrator, and Celery through a small VM launcher that loads the runtime env safely.
+
+Reason:
+
+- The GitHub App private key is stored as an escaped single-line dotenv value and should not be sourced directly by shell.
+- Runtime secrets need to be available to the VM for real webhook verification and GitHub App installation token exchange.
+
+Impact:
+
+- GitHub Service can generate a GitHub App JWT from the VM runtime env.
+- API Gateway now enforces `X-Hub-Signature-256` using `GITHUB_WEBHOOK_SECRET`.
+- Public HTTPS verification passed:
+- Unsigned webhook request returned `401 Missing signature`.
+- Correctly signed unsupported webhook event returned `202 Ignored unsupported GitHub event`.
+- The next validation step is redelivering a real GitHub App webhook from GitHub or triggering a pull request event in an installed repository.

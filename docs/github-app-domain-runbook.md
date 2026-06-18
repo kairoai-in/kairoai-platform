@@ -55,6 +55,10 @@ Verified:
 
 Create the GitHub App in the `kairoai-in` organization.
 
+Current app name:
+
+- `KairoAI-in`
+
 Webhook URL:
 
 ```text
@@ -97,10 +101,19 @@ GitHub Service:
 - `GITHUB_APP_PRIVATE_KEY`
 - Optional local/testing fallback: `GITHUB_TOKEN`
 
+Verified:
+
+- Runtime env is copied to `/home/azureuser/kairoai/runtime.env` on the Azure VM.
+- The runtime env file is permissioned as `600`.
+- GitHub Service can generate a GitHub App JWT from the runtime env.
+- API Gateway rejects unsigned webhook requests with `401`.
+- API Gateway accepts correctly signed unsupported events with `202`.
+
 ## Current Status
 
 - Nginx is installed and configured on the Azure VM.
 - DNS for `api.kairoai.in` resolves to the VM.
 - Azure NSG allows public `80/tcp` and `443/tcp`.
 - HTTPS/TLS is active for `api.kairoai.in`.
-- GitHub App has not been created yet.
+- GitHub App runtime credentials are present on the VM.
+- Next validation step is sending or redelivering a real GitHub App webhook from GitHub.
