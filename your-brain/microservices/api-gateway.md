@@ -1,0 +1,55 @@
+# API Gateway Service Plan
+
+## Repository
+
+- `kairoai-api-gateway`
+
+## Purpose
+
+Provide the public entrypoint for KairoAI APIs and GitHub webhooks.
+
+## Responsibilities
+
+- Receive GitHub webhook events.
+- Verify GitHub webhook signatures.
+- Expose health and readiness endpoints.
+- Validate incoming payloads.
+- Create or forward review requests to the Review Orchestrator.
+- Enforce public API authentication later.
+
+## MVP Endpoints
+
+- `GET /health`
+- `GET /ready`
+- `POST /api/github/events`
+- `POST /reviews`
+- `GET /reviews/{review_id}`
+
+## Dependencies
+
+- Review Orchestrator.
+- Shared schemas.
+- Secret provider for webhook secret.
+- Observability adapter.
+
+## Configuration
+
+- `PORT`
+- `GITHUB_WEBHOOK_SECRET`
+- `REVIEW_ORCHESTRATOR_URL`
+- `LOG_LEVEL`
+- `ENVIRONMENT`
+
+## MVP Deliverables
+
+- FastAPI service scaffold.
+- Webhook signature validation.
+- Request logging with correlation IDs.
+- OpenAPI output.
+- Dockerfile.
+- Unit tests for signature validation and payload forwarding.
+
+## Risks
+
+- Incorrect webhook validation can allow forged events.
+- Public API must stay small until auth is designed.
