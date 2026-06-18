@@ -54,12 +54,22 @@ Coordinate review jobs across all analysis services.
 
 - Review lifecycle model.
 - PostgreSQL-backed review persistence.
+- Changed Terraform file persistence.
 - Database migrations before production rollout.
 - Step orchestration.
 - Celery task-dispatch foundation.
 - Retry policy.
 - Failure handling.
 - Integration tests using mocked services.
+
+## Implemented
+
+- Creates shared-contract review jobs.
+- Persists reviews in PostgreSQL.
+- Calls GitHub Service to fetch Terraform-only changed files.
+- Persists changed Terraform files.
+- Exposes `GET /reviews/{reviewId}/terraform-files`.
+- Dispatches placeholder Celery task when enabled.
 
 ## Risks
 

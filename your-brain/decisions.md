@@ -278,3 +278,20 @@ Impact:
 - `kairoai-github-service` can now return shared-contract PR details and changed file lists.
 - Changed-file responses default to Terraform-only files.
 - Review Orchestrator can integrate GitHub Service next before dispatching Terraform analysis.
+
+## 2026-06-18 19:54:27 +05:30 - Persist Terraform Files During Review Creation
+
+Decision:
+
+- Review Orchestrator should call GitHub Service during review creation to fetch Terraform-only changed files.
+- Persist changed Terraform files in PostgreSQL before dispatching downstream analysis.
+
+Reason:
+
+- Terraform analysis, security scanning, cost estimation, and governance evaluation all need a stable list of changed Terraform files tied to the review.
+
+Impact:
+
+- Review Orchestrator now depends on `GITHUB_SERVICE_URL`.
+- The local stack includes GitHub Service.
+- A new `GET /reviews/{review_id}/terraform-files` endpoint exposes persisted Terraform files for the review.
