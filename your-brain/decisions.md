@@ -333,3 +333,18 @@ Impact:
 - After DNS and NSG are ready, Certbot can issue TLS for `api.kairoai.in`.
 - API Gateway should keep verifying `X-Hub-Signature-256` using `GITHUB_WEBHOOK_SECRET`.
 - GitHub Service and Review Orchestrator should prefer installation-scoped GitHub API calls when a webhook includes `installation.id`.
+
+## 2026-06-18 23:33:39 +05:30 - Verify Api Subdomain DNS
+
+Decision:
+
+- Treat `api.kairoai.in` DNS setup as complete for the current VM test endpoint.
+
+Reason:
+
+- DNS resolution now returns `4.240.112.138`, which matches the Azure VM public IP.
+
+Impact:
+
+- The remaining blocker for public webhook validation is Azure network access, not DNS.
+- Azure NSG still needs inbound `80/tcp` and `443/tcp` rules before Certbot and GitHub webhook delivery can be validated publicly.

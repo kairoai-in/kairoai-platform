@@ -12,6 +12,10 @@ Required DNS:
 
 - `A api.kairoai.in -> 4.240.112.138`
 
+Verified:
+
+- `api.kairoai.in` resolves to `4.240.112.138` as of `2026-06-18 23:33:39 +05:30`.
+
 Optional:
 
 - `A kairoai.in -> 4.240.112.138`
@@ -89,6 +93,7 @@ GitHub Service:
 ## Current Status
 
 - Nginx is installed and configured on the Azure VM.
-- DNS for `api.kairoai.in` is not currently resolving to the VM.
+- DNS for `api.kairoai.in` resolves to the VM.
 - Azure NSG does not currently allow public HTTP access to port `80`.
+- HTTPS/TLS is pending until public HTTP is reachable for certificate validation.
 - GitHub App has not been created yet.
