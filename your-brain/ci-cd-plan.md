@@ -31,7 +31,7 @@ Run after merge to `main`:
 
 - Repeat pull request checks.
 - Build container images.
-- Push images to the selected registry.
+- Push images to Azure Container Registry.
 - Deploy to `dev` after successful build.
 
 ## Secrets
@@ -43,7 +43,7 @@ Expected CI secrets:
 - Webhook secret.
 - OpenAI API key.
 - Infracost API key.
-- Container registry credentials, if not using GitHub token-based publishing.
+- Azure Container Registry publishing identity.
 - Cloud deployment credentials.
 
 ## Deployment Direction
@@ -51,8 +51,9 @@ Expected CI secrets:
 Early path:
 
 - Use GitHub Actions.
-- Publish Docker images.
-- Deploy to a simple dev environment first.
+- Publish Docker images to Azure Container Registry.
+- Deploy to AKS dev environment with Helm.
+- Use Terraform `azurerm` workflows for Azure infrastructure.
 
 Later path:
 
@@ -61,9 +62,51 @@ Later path:
 - Add rollback support.
 - Add preview environments if useful for UI/dashboard work.
 
+## Service Repository Workflow
+
+Each service repository should run:
+
+- Format check.
+- Lint.
+- Unit tests.
+- Contract tests using `kairoai-shared`.
+- Docker build.
+- Vulnerability scan.
+- Push image to ACR after merge to `main`.
+
+Image tagging:
+
+- Commit SHA tag for traceability.
+- Semver tag for releases later.
+- Environment promotion should reference immutable image tags.
+
+## Infrastructure Repository Workflow
+
+`kairoai-infra` should run:
+
+- Terraform format check.
+- Terraform validate.
+- Terraform plan on pull requests.
+- Terraform apply after merge with environment protection.
+
+State backend:
+
+- Azure Storage Account.
+- Separate state key per environment.
+
+## Deployment Repository Workflow
+
+`kairoai-deployments` should run:
+
+- Helm lint.
+- Template rendering validation.
+- Kubernetes schema validation.
+- Deploy to AKS dev after merge.
+- Require manual approval for staging and production later.
+
 ## Open Questions
 
-- Which container registry should be used first: GitHub Container Registry, AWS ECR, or another registry?
-- Which deployment target should be used first?
 - Should deployments require manual approval for staging and production?
 - What test coverage threshold should be enforced before public beta?
+- Should ACR be per-environment or shared across environments?
+- Should Terraform apply be manual for all environments or automatic for dev only?

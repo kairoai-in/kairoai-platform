@@ -37,6 +37,8 @@ Preferred early production path:
 - Run services on Azure Kubernetes Service.
 - Store secrets in Azure Key Vault.
 - Store container images in Azure Container Registry.
+- Provision Azure resources with Terraform and the `azurerm` provider.
+- Store Terraform remote state in an Azure Storage Account.
 - Use Azure Database for PostgreSQL for durable state.
 - Use Azure Monitor and Application Insights for observability.
 - Use Azure Workload Identity for pod access to Azure resources.
@@ -54,9 +56,49 @@ Portability requirement:
 - `staging` for GitHub App integration testing.
 - `prod` for customer-facing installs.
 
+## Terraform State Plan
+
+Remote state backend:
+
+- Azure Storage Account.
+- Dedicated state container.
+- Separate state key per environment.
+
+Recommended state layout:
+
+- `kairoai/dev/terraform.tfstate`
+- `kairoai/staging/terraform.tfstate`
+- `kairoai/prod/terraform.tfstate`
+
+Access pattern:
+
+- CI/CD uses Azure federated identity or service principal credentials.
+- Human access should be limited to platform maintainers.
+- State storage should enable versioning, soft delete, and restricted network access where practical.
+
+## Azure Services Planned For Application
+
+First production direction:
+
+- Azure Kubernetes Service for workloads.
+- Azure Key Vault for secrets.
+- Azure Container Registry for images.
+- Azure Database for PostgreSQL for application data.
+- Azure Storage Account for Terraform state and optional artifacts.
+- Azure Monitor and Application Insights for observability.
+- Azure Workload Identity for service access to Azure resources.
+
+Possible additions as requirements become clearer:
+
+- Azure Service Bus for durable eventing.
+- Azure Cache for Redis for queueing/caching.
+- Azure Blob Storage for analysis artifacts.
+- Azure Front Door or Application Gateway for ingress strategy.
+
 ## Open Questions
 
 - Should Terraform plan execution run in the main platform cluster or in separate sandbox workers?
 - What is the first acceptable isolation model for customer repository code?
 - What data retention policy should apply to Terraform plans and scan results?
 - Should MVP queueing use Redis first or Azure Service Bus from the start?
+- Should AKS ingress start with NGINX Ingress Controller, Application Gateway Ingress Controller, or another ingress path?

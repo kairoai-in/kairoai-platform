@@ -10,7 +10,7 @@ Store Kubernetes deployment configuration and release overlays.
 
 ## Responsibilities
 
-- Helm charts or Kustomize overlays.
+- Helm charts.
 - Environment-specific values.
 - Service deployment manifests.
 - Ingress configuration.
@@ -20,7 +20,7 @@ Store Kubernetes deployment configuration and release overlays.
 
 ## Recommended Direction
 
-Start with Helm if we expect reusable service charts.
+Use Helm for application deployment into AKS.
 
 Use one shared service chart pattern for:
 
@@ -43,8 +43,10 @@ Use one shared service chart pattern for:
 - Review Orchestrator deployment.
 - Shared config maps and secrets references.
 - Dev environment values.
+- Helm release workflow for dev.
 
 ## Risks
 
 - Deployment config can drift from service repos.
 - Environment-specific values need clear ownership.
+- Helm values can become messy unless common values and per-environment values are separated carefully.

@@ -39,8 +39,8 @@ Recommended first repositories:
 | `kairoai-ai-service` | Health score, merge decision, AI summary, recommendations, fix suggestions. |
 | `kairoai-notification-service` | PR comments, GitHub check runs, status updates, future alerts. |
 | `kairoai-shared` | Shared schemas, contracts, SDK clients, common test fixtures. |
-| `kairoai-infra` | Azure infrastructure, AKS, Key Vault, networking, identities, Terraform/OpenTofu. |
-| `kairoai-deployments` | Kubernetes manifests, Helm charts, environment overlays, release config. |
+| `kairoai-infra` | Azure infrastructure, AKS, Key Vault, ACR, PostgreSQL, storage, networking, identities, Terraform `azurerm`. |
+| `kairoai-deployments` | Helm charts, Kubernetes manifests, environment overlays, release config. |
 
 Optional later repositories:
 
@@ -167,9 +167,18 @@ Recommended infrastructure repository:
 
 - `kairoai-infra`.
 
+IaC direction:
+
+- Terraform with the `azurerm` provider.
+- Azure Storage Account remote state.
+
 Recommended deployment repository:
 
 - `kairoai-deployments`.
+
+Deployment direction:
+
+- Helm charts for AKS releases.
 
 Keep these separate because infrastructure provisioning and Kubernetes release configuration change at different speeds.
 
@@ -272,14 +281,14 @@ Each service repo:
 - Lint.
 - Test.
 - Build Docker image.
-- Publish image to Azure Container Registry or GitHub Container Registry.
+- Publish image to Azure Container Registry.
 - Run dependency/security scans.
 
 Platform/deployment repos:
 
 - Validate Docker Compose.
-- Validate Kubernetes manifests or Helm charts.
-- Run Terraform/OpenTofu plan for infra changes.
+- Validate Kubernetes manifests and Helm charts.
+- Run Terraform plan for infra changes.
 - Deploy to dev after merge.
 - Use manual approvals for staging and production later.
 
@@ -288,7 +297,6 @@ Platform/deployment repos:
 - Confirm repository list before creation.
 - Confirm backend stack: Python FastAPI or Node.js NestJS.
 - Confirm queue choice for MVP: Redis first or Azure Service Bus from the start.
-- Confirm infra-as-code tool: Terraform or OpenTofu.
 - Confirm whether `kairoai-platform` remains a coordination repo only or also contains local compose and integration tests.
 
 ## My Recommendation For Next Step

@@ -107,3 +107,57 @@ Impact:
 - Service planning will live in `your-brain/microservices/`.
 - Shared schemas and events will live in `your-brain/schema-and-contracts-plan.md`.
 - Repository creation should follow these plans.
+
+## 2026-06-18 17:25:49 +05:30 - Use Terraform Azurerm For Azure Infrastructure
+
+Decision:
+
+- Use Terraform with the `azurerm` provider for infrastructure as code.
+- Store Terraform remote state in an Azure Storage Account.
+
+Reason:
+
+- Azure is the first production target, and Terraform with `azurerm` is the clearest path for provisioning AKS, Key Vault, ACR, PostgreSQL, storage, identities, and monitoring.
+- Remote state in Azure Storage keeps state durable, centralized, and accessible from CI/CD.
+
+Impact:
+
+- The infrastructure repository should be `kairoai-infra`.
+- The infra repo should include backend configuration for Azure Storage remote state.
+- Infrastructure CI/CD should run Terraform format, validate, plan, and apply with environment controls.
+- This is a current plan and can change if later requirements push us toward a different IaC strategy.
+
+## 2026-06-18 17:25:49 +05:30 - Keep Terraform And Helm In Separate Repositories
+
+Decision:
+
+- Keep Azure infrastructure Terraform code in `kairoai-infra`.
+- Keep Helm charts and Kubernetes deployment configuration in `kairoai-deployments`.
+
+Reason:
+
+- Terraform provisions Azure resources outside and around the cluster.
+- Helm deploys application workloads inside AKS.
+- These layers change at different speeds and should have separate review, promotion, and rollback paths.
+
+Impact:
+
+- `kairoai-infra` owns resource groups, AKS, Key Vault, ACR, PostgreSQL, storage accounts, networking, identities, and monitoring.
+- `kairoai-deployments` owns Helm charts, values files, release config, ingress, external secret references, and workload identity annotations.
+- CI/CD can independently plan/apply infra changes and package/deploy application releases.
+
+## 2026-06-18 17:25:49 +05:30 - Build And Push Service Images To Azure Container Registry
+
+Decision:
+
+- Service CI/CD will test, build container images, and push them to Azure Container Registry.
+
+Reason:
+
+- ACR is the natural registry for AKS-based deployment and can integrate cleanly with Azure identities and deployment pipelines.
+
+Impact:
+
+- Each service repository should include GitHub Actions for linting, tests, Docker build, and image push.
+- Deployment automation should deploy image tags from ACR using Helm.
+- Local development should still support Docker Compose without depending on ACR.

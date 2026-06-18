@@ -16,19 +16,24 @@ Provision Azure infrastructure for KairoAI.
 - Azure Database for PostgreSQL.
 - Azure Cache for Redis or queue resources.
 - Azure Storage Account.
+- Terraform remote state backend.
 - Azure Monitor and Application Insights.
 - Networking.
 - Managed identities and workload identity.
 
 ## IaC Direction
 
-Preferred:
+- Terraform.
+- `azurerm` provider.
+- Azure Storage Account backend for remote state.
 
-- Terraform or OpenTofu modules.
+## State Plan
 
-Decision needed:
-
-- Confirm Terraform vs OpenTofu before implementation.
+- Use a dedicated Azure Storage Account for Terraform state.
+- Use one state container.
+- Use separate state keys per environment.
+- Enable storage account protections such as versioning and soft delete where practical.
+- Access state from CI/CD through Azure identity.
 
 ## Environments
 
@@ -43,6 +48,7 @@ Decision needed:
 - Key Vault.
 - ACR.
 - PostgreSQL.
+- Storage Account and container for Terraform state.
 - Basic monitoring.
 - Outputs consumed by deployment repo.
 
