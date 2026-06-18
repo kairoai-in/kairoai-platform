@@ -348,3 +348,23 @@ Impact:
 
 - The remaining blocker for public webhook validation is Azure network access, not DNS.
 - Azure NSG still needs inbound `80/tcp` and `443/tcp` rules before Certbot and GitHub webhook delivery can be validated publicly.
+
+## 2026-06-18 23:39:05 +05:30 - Enable HTTPS For Api Subdomain
+
+Decision:
+
+- Enable HTTPS for `api.kairoai.in` using Let's Encrypt Certbot with the Nginx plugin on the Azure VM.
+- Redirect HTTP traffic to HTTPS.
+
+Reason:
+
+- GitHub App webhooks should use a public HTTPS endpoint.
+- TLS on the stable API subdomain lets us create the GitHub App now and later move the same host behind AKS ingress.
+
+Impact:
+
+- `https://api.kairoai.in/health` is publicly reachable and returns API Gateway health.
+- `http://api.kairoai.in/health` redirects to HTTPS.
+- The current certificate expires on `2026-09-16 17:10:05 UTC`.
+- Certbot renewal is scheduled on the VM.
+- The next step is creating the GitHub App in `kairoai-in` and setting `GITHUB_WEBHOOK_SECRET`, `GITHUB_APP_ID`, and `GITHUB_APP_PRIVATE_KEY` in runtime configuration.

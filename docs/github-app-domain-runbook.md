@@ -44,6 +44,13 @@ sudo apt-get install -y certbot python3-certbot-nginx
 sudo certbot --nginx -d api.kairoai.in
 ```
 
+Verified:
+
+- `https://api.kairoai.in/health` returns API Gateway health as of `2026-06-18 23:39:05 +05:30`.
+- `http://api.kairoai.in/health` redirects to `https://api.kairoai.in/health`.
+- Let's Encrypt certificate expires on `2026-09-16 17:10:05 UTC`.
+- Certbot renewal timer is installed on the VM.
+
 ## GitHub App Settings
 
 Create the GitHub App in the `kairoai-in` organization.
@@ -94,6 +101,6 @@ GitHub Service:
 
 - Nginx is installed and configured on the Azure VM.
 - DNS for `api.kairoai.in` resolves to the VM.
-- Azure NSG does not currently allow public HTTP access to port `80`.
-- HTTPS/TLS is pending until public HTTP is reachable for certificate validation.
+- Azure NSG allows public `80/tcp` and `443/tcp`.
+- HTTPS/TLS is active for `api.kairoai.in`.
 - GitHub App has not been created yet.
