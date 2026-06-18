@@ -312,3 +312,24 @@ Impact:
 - API Gateway can validate `X-Hub-Signature-256` when `GITHUB_WEBHOOK_SECRET` is configured.
 - GitHub Service can generate GitHub App JWTs and exchange them for installation tokens.
 - The next milestone is creating the actual GitHub App in the GitHub organization and pointing its webhook URL at the VM/API Gateway.
+
+## 2026-06-18 21:16:02 +05:30 - Use Api Subdomain For GitHub App Webhook
+
+Decision:
+
+- Use `api.kairoai.in` as the stable public API host for the GitHub App webhook.
+- Use `https://api.kairoai.in/api/github/events` as the planned GitHub App webhook URL.
+- Use Nginx on the Azure VM as the current reverse proxy for the test window.
+
+Reason:
+
+- A stable domain lets the GitHub App configuration stay the same while the backend moves from VM testing to AKS ingress later.
+- Nginx gives a simple, production-like reverse proxy path for validating webhook delivery before the full AKS/Helm setup exists.
+
+Impact:
+
+- DNS must add `A api.kairoai.in -> 4.240.112.138` for the current VM.
+- Azure NSG must allow inbound `80/tcp` and `443/tcp` before public HTTP/TLS validation can work.
+- After DNS and NSG are ready, Certbot can issue TLS for `api.kairoai.in`.
+- API Gateway should keep verifying `X-Hub-Signature-256` using `GITHUB_WEBHOOK_SECRET`.
+- GitHub Service and Review Orchestrator should prefer installation-scoped GitHub API calls when a webhook includes `installation.id`.
