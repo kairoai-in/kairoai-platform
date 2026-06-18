@@ -43,6 +43,8 @@ Expected CI secrets:
 - Webhook secret.
 - OpenAI API key.
 - Infracost API key.
+- Azure PostgreSQL Flexible Server connection details.
+- RabbitMQ/Celery broker connection details.
 - Azure Container Registry publishing identity.
 - Cloud deployment credentials.
 

@@ -239,6 +239,6 @@ Initial events:
 
 ## Open Questions
 
-- Should events initially move over Redis streams, Celery tasks, HTTP callbacks, or Azure Service Bus?
+- Which events should be persisted as durable audit records versus dispatched only as Celery tasks?
 - Should the shared package publish to GitHub Packages, PyPI private registry, or be consumed by Git submodule/subtree during early MVP?
 - How much raw Terraform plan data can safely be stored?

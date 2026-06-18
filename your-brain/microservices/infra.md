@@ -13,8 +13,8 @@ Provision Azure infrastructure for KairoAI.
 - AKS cluster.
 - Azure Key Vault.
 - Azure Container Registry.
-- Azure Database for PostgreSQL.
-- Azure Cache for Redis or queue resources.
+- Azure Database for PostgreSQL Flexible Server.
+- RabbitMQ broker resources or Kubernetes deployment path.
 - Azure Storage Account.
 - Terraform remote state backend.
 - Azure Monitor and Application Insights.
@@ -47,7 +47,7 @@ Provision Azure infrastructure for KairoAI.
 - AKS cluster.
 - Key Vault.
 - ACR.
-- PostgreSQL.
+- PostgreSQL Flexible Server.
 - Storage Account and container for Terraform state.
 - Basic monitoring.
 - Outputs consumed by deployment repo.

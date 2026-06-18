@@ -39,7 +39,7 @@ Recommended first repositories:
 | `kairoai-ai-service` | Health score, merge decision, AI summary, recommendations, fix suggestions. |
 | `kairoai-notification-service` | PR comments, GitHub check runs, status updates, future alerts. |
 | `kairoai-shared` | Shared schemas, contracts, SDK clients, common test fixtures. |
-| `kairoai-infra` | Azure infrastructure, AKS, Key Vault, ACR, PostgreSQL, storage, networking, identities, Terraform `azurerm`. |
+| `kairoai-infra` | Azure infrastructure, AKS, Key Vault, ACR, PostgreSQL Flexible Server, storage, networking, identities, Terraform `azurerm`. |
 | `kairoai-deployments` | Helm charts, Kubernetes manifests, environment overlays, release config. |
 
 Optional later repositories:
@@ -143,8 +143,8 @@ Use these abstractions:
 | Need | Portable Interface | Azure First Implementation | Local/Test Implementation |
 | --- | --- | --- | --- |
 | Secrets | Secret provider | Azure Key Vault | `.env` or local secret file |
-| Queue | Job/event queue | Azure Service Bus or Redis on AKS | Redis |
-| Database | SQL persistence | Azure Database for PostgreSQL | PostgreSQL container |
+| Queue | Job/event queue | RabbitMQ with Celery | RabbitMQ container |
+| Database | SQL persistence | Azure Database for PostgreSQL Flexible Server | PostgreSQL container |
 | Object storage | Artifact store | Azure Blob Storage | Local filesystem or MinIO |
 | Container runtime | OCI containers | AKS | Docker Compose |
 | Identity | Workload identity | Azure Workload Identity | Local env credentials |
@@ -156,8 +156,8 @@ First Azure target:
 
 - AKS for running services.
 - Azure Key Vault for secrets.
-- Azure Database for PostgreSQL for durable platform state.
-- Azure Cache for Redis or Redis inside AKS for MVP queueing.
+- Azure Database for PostgreSQL Flexible Server for durable platform state.
+- RabbitMQ with Celery for MVP queueing and async jobs.
 - Azure Container Registry for service images.
 - Azure Blob Storage for non-sensitive artifacts if needed.
 - Azure Monitor and Application Insights for logs, metrics, and traces.
@@ -188,7 +188,7 @@ Keep these separate because infrastructure provisioning and Kubernetes release c
 
 - `docker-compose.yml` for all services.
 - Local PostgreSQL.
-- Local Redis.
+- Local RabbitMQ.
 - Local mock or sandbox GitHub webhook input.
 - Local `.env.example`.
 - Sample Terraform repositories or fixtures.
@@ -256,7 +256,7 @@ Recommended backend:
 - Python FastAPI for API-facing services.
 - Python workers for scanner-heavy services.
 - PostgreSQL for state.
-- Redis for MVP queueing.
+- RabbitMQ with Celery for MVP queueing.
 - Pydantic for contracts.
 - OpenTelemetry for tracing.
 
@@ -296,8 +296,8 @@ Platform/deployment repos:
 
 - Confirm repository list before creation.
 - Confirm backend stack: Python FastAPI or Node.js NestJS.
-- Confirm queue choice for MVP: Redis first or Azure Service Bus from the start.
 - Confirm whether `kairoai-platform` remains a coordination repo only or also contains local compose and integration tests.
+- Confirm hosted RabbitMQ strategy: RabbitMQ on AKS first or managed RabbitMQ-compatible broker later.
 
 ## My Recommendation For Next Step
 
@@ -306,7 +306,7 @@ Proceed like this:
 1. Create the first-wave repositories listed above.
 2. Keep `kairoai-platform` as the central coordination and local integration repo.
 3. Use Python FastAPI for MVP services.
-4. Use Redis locally and in MVP, but define a queue adapter so Azure Service Bus can replace it later.
-5. Use Azure AKS, Key Vault, PostgreSQL, ACR, and Azure Monitor as the production direction.
+4. Use RabbitMQ with Celery locally and in MVP, while keeping broker details behind task/queue adapters.
+5. Use Azure AKS, Key Vault, PostgreSQL Flexible Server, ACR, and Azure Monitor as the production direction.
 6. Create `kairoai-shared` early so contracts stay clean before services diverge.
 7. Delay dashboard, drift detection, module reuse, and auto-remediation until the PR review loop works end to end.

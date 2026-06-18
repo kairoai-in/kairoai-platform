@@ -27,7 +27,7 @@ Coordinate review jobs across all analysis services.
 ## Dependencies
 
 - PostgreSQL.
-- Queue provider.
+- RabbitMQ with Celery.
 - GitHub Service.
 - Terraform Runner.
 - Security Service.
@@ -40,7 +40,8 @@ Coordinate review jobs across all analysis services.
 ## Configuration
 
 - `DATABASE_URL`
-- `QUEUE_URL`
+- `CELERY_BROKER_URL`
+- `CELERY_RESULT_BACKEND`
 - `GITHUB_SERVICE_URL`
 - `TERRAFORM_RUNNER_URL`
 - `SECURITY_SERVICE_URL`

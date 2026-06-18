@@ -193,3 +193,39 @@ Impact:
 - `kairoai-api-gateway` now accepts supported pull request events and forwards review creation requests.
 - `kairoai-review-orchestrator` now creates and returns shared-contract `ReviewJob` records using an in-memory store for the first implementation.
 - PostgreSQL-backed persistence and queue dispatch remain next-step work.
+
+## 2026-06-18 19:17:38 +05:30 - Use Azure PostgreSQL Flexible Server For Persistence
+
+Decision:
+
+- Use Azure Database for PostgreSQL Flexible Server for hosted application persistence.
+- Do not run PostgreSQL as an application pod in AKS for hosted environments.
+
+Reason:
+
+- Managed PostgreSQL gives stronger durability, backups, maintenance, and operational separation than running the database inside the application cluster.
+
+Impact:
+
+- `kairoai-infra` should provision Azure PostgreSQL Flexible Server.
+- Application services should connect through environment-driven `DATABASE_URL` configuration.
+- Local development can still use a PostgreSQL container through Docker Compose.
+
+## 2026-06-18 19:17:38 +05:30 - Use RabbitMQ With Celery For Async Work
+
+Decision:
+
+- Use RabbitMQ with Celery for background jobs and async workflow dispatch.
+- Do not use Azure Service Bus as the planned queue for the MVP.
+
+Reason:
+
+- Celery fits the Python service stack and scanner-heavy workloads well.
+- RabbitMQ gives a portable broker that can run locally and in Azure-hosted environments.
+
+Impact:
+
+- `kairoai-review-orchestrator` should dispatch analysis and notification work through Celery tasks.
+- RabbitMQ should be part of local Docker Compose.
+- Hosted environments can start with RabbitMQ on AKS or a managed RabbitMQ-compatible service if selected later.
+- Queue abstractions should still keep broker details out of business logic.
