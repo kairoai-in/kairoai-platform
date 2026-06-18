@@ -261,3 +261,20 @@ Impact:
 
 - The next implementation step can move beyond platform plumbing into service behavior, starting with GitHub Service fetching changed pull request files.
 - Docker image builds still need a secure private shared-package strategy before Compose can run all app services as containers.
+
+## 2026-06-18 19:48:30 +05:30 - Implement GitHub Pull Request Metadata And File Contracts
+
+Decision:
+
+- Add `PullRequestFile` to `kairoai-shared`.
+- Implement `kairoai-github-service` endpoints for pull request metadata and changed files.
+
+Reason:
+
+- The review workflow needs a service-owned way to fetch GitHub pull request details and identify changed Terraform files.
+
+Impact:
+
+- `kairoai-github-service` can now return shared-contract PR details and changed file lists.
+- Changed-file responses default to Terraform-only files.
+- Review Orchestrator can integrate GitHub Service next before dispatching Terraform analysis.

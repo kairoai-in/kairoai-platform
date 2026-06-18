@@ -44,10 +44,18 @@ Own all GitHub App interactions.
 ## MVP Deliverables
 
 - GitHub App token generation.
-- PR file detection.
+- PR metadata fetching.
+- PR file detection with Terraform-only filtering.
 - PR comment creation.
 - Check run creation and update.
 - Tests with mocked GitHub API responses.
+
+## Implemented
+
+- `GET /github/repos/{owner}/{repo}/pulls/{number}`
+- `GET /github/repos/{owner}/{repo}/pulls/{number}/files`
+- Shared `PullRequestFile` contract.
+- Mocked GitHub API tests for PR metadata and changed files.
 
 ## Risks
 
