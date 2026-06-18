@@ -14,6 +14,7 @@ Use it to keep durable project context, decisions, and plans close to the code s
 - `application-and-repo-plan.md` - repository strategy, service split, Azure direction, portability plan, and execution sequence.
 - `schema-and-contracts-plan.md` - shared domain models, events, API contracts, and versioning strategy.
 - `microservices/` - one planning file per service or deployable repo.
+- `vm-validation-log.md` - validation notes from VM/dev-host integration testing.
 
 ## Update Rule
 

@@ -246,3 +246,18 @@ Impact:
 - Syntax checks can run locally in this workspace.
 - Full runtime validation should run on a VM or dev host with Docker installed.
 - Review persistence currently uses SQLAlchemy with startup table creation; Alembic migrations should replace this before production.
+
+## 2026-06-18 19:44:20 +05:30 - Validate First Integration Flow On Azure VM
+
+Decision:
+
+- Treat the first VM validation as successful for the initial local integration stack.
+
+Reason:
+
+- API Gateway, Review Orchestrator, PostgreSQL persistence, RabbitMQ, and Celery all worked together on the Azure VM.
+
+Impact:
+
+- The next implementation step can move beyond platform plumbing into service behavior, starting with GitHub Service fetching changed pull request files.
+- Docker image builds still need a secure private shared-package strategy before Compose can run all app services as containers.
