@@ -389,3 +389,20 @@ Impact:
 - Unsigned webhook request returned `401 Missing signature`.
 - Correctly signed unsupported webhook event returned `202 Ignored unsupported GitHub event`.
 - The next validation step is redelivering a real GitHub App webhook from GitHub or triggering a pull request event in an installed repository.
+
+## 2026-06-19 00:11:08 +05:30 - Create Example Terraform Repository For App Validation
+
+Decision:
+
+- Create `kairoai-in/example-terraform` as a private test repository.
+
+Reason:
+
+- The GitHub App needs an installed repository where we can trigger real pull request webhooks.
+- A lightweight Terraform repo gives KairoAI changed `.tf` files to detect without needing cloud credentials.
+
+Impact:
+
+- The repository default branch is `main`.
+- The repo contains a minimal `null_resource` Terraform configuration.
+- After the GitHub App is installed on this repo, creating or updating a pull request should trigger the first real end-to-end review flow.
