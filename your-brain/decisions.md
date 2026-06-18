@@ -176,3 +176,20 @@ Impact:
 
 - `kairoai-shared` now acts as the contract spine for the rest of the platform.
 - API Gateway, GitHub Service, and Review Orchestrator should integrate these shared contracts next.
+
+## 2026-06-18 19:15:40 +05:30 - Implement First Webhook To Review Contract Flow
+
+Decision:
+
+- Wire `kairoai-api-gateway` and `kairoai-review-orchestrator` to `kairoai-shared` contracts.
+- Add the first flow where a GitHub pull request webhook becomes a `ReviewJob`.
+
+Reason:
+
+- This proves the first product heartbeat: GitHub event in, review job created out.
+
+Impact:
+
+- `kairoai-api-gateway` now accepts supported pull request events and forwards review creation requests.
+- `kairoai-review-orchestrator` now creates and returns shared-contract `ReviewJob` records using an in-memory store for the first implementation.
+- PostgreSQL-backed persistence and queue dispatch remain next-step work.
