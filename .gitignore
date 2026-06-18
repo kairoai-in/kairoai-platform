@@ -3,3 +3,6 @@
 !.env.example
 
 local/secrets/
+
+*.private-key.pem
+*.pem
