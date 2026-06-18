@@ -53,8 +53,10 @@ Coordinate review jobs across all analysis services.
 ## MVP Deliverables
 
 - Review lifecycle model.
-- Database migrations.
+- PostgreSQL-backed review persistence.
+- Database migrations before production rollout.
 - Step orchestration.
+- Celery task-dispatch foundation.
 - Retry policy.
 - Failure handling.
 - Integration tests using mocked services.

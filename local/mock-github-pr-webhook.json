@@ -1,0 +1,30 @@
+{
+  "action": "opened",
+  "installation": {
+    "id": 12345
+  },
+  "repository": {
+    "name": "example-terraform",
+    "default_branch": "main",
+    "clone_url": "https://github.com/kairoai-in/example-terraform.git",
+    "owner": {
+      "login": "kairoai-in"
+    }
+  },
+  "pull_request": {
+    "number": 7,
+    "title": "Add production database",
+    "html_url": "https://github.com/kairoai-in/example-terraform/pull/7",
+    "head": {
+      "sha": "abc1234567890",
+      "ref": "feature/database"
+    },
+    "base": {
+      "sha": "def1234567890",
+      "ref": "main"
+    },
+    "user": {
+      "login": "octocat"
+    }
+  }
+}

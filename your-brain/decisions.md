@@ -229,3 +229,20 @@ Impact:
 - RabbitMQ should be part of local Docker Compose.
 - Hosted environments can start with RabbitMQ on AKS or a managed RabbitMQ-compatible service if selected later.
 - Queue abstractions should still keep broker details out of business logic.
+
+## 2026-06-18 19:27:59 +05:30 - Add VM-Ready Local Integration Stack
+
+Decision:
+
+- Add Docker Compose in `kairoai-platform` for VM/dev-host testing of API Gateway, Review Orchestrator, PostgreSQL, RabbitMQ, and a Celery worker.
+- Add PostgreSQL persistence and Celery task-dispatch foundation to `kairoai-review-orchestrator`.
+
+Reason:
+
+- The local sandbox cannot run Docker or full service dependencies, but the platform needs a reproducible VM/dev-host path for integration testing.
+
+Impact:
+
+- Syntax checks can run locally in this workspace.
+- Full runtime validation should run on a VM or dev host with Docker installed.
+- Review persistence currently uses SQLAlchemy with startup table creation; Alembic migrations should replace this before production.

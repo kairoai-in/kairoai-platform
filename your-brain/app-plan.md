@@ -7,11 +7,13 @@ The first working loop should be:
 1. GitHub pull request event arrives.
 2. Platform detects changed Terraform files.
 3. Review job is created.
-4. Terraform validation runs.
-5. Checkov scan runs.
-6. Infracost estimate runs.
-7. AI Intelligence creates summary, score, and merge decision.
-8. Notification service posts a PR comment and status check.
+4. Review job is persisted in PostgreSQL.
+5. Celery dispatches async analysis work through RabbitMQ.
+6. Terraform validation runs.
+7. Checkov scan runs.
+8. Infracost estimate runs.
+9. AI Intelligence creates summary, score, and merge decision.
+10. Notification service posts a PR comment and status check.
 
 ## MVP Services
 

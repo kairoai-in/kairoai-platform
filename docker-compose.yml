@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kairoai}
+      POSTGRES_USER: ${POSTGRES_USER:-kairoai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kairoai}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kairoai} -d ${POSTGRES_DB:-kairoai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-kairoai}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-kairoai}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  review-orchestrator:
+    build:
+      context: ../kairoai-review-orchestrator
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    environment:
+      ENVIRONMENT: local
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://kairoai:kairoai@postgres:5432/kairoai}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-amqp://kairoai:kairoai@rabbitmq:5672//}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-rpc://}
+      ENABLE_TASK_DISPATCH: ${ENABLE_TASK_DISPATCH:-false}
+    ports:
+      - "8001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  review-worker:
+    build:
+      context: ../kairoai-review-orchestrator
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    command: celery -A kairoai_review_orchestrator.tasks.celery_app.celery_app worker --loglevel=INFO
+    environment:
+      ENVIRONMENT: local
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://kairoai:kairoai@postgres:5432/kairoai}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-amqp://kairoai:kairoai@rabbitmq:5672//}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-rpc://}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: ../kairoai-api-gateway
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    environment:
+      ENVIRONMENT: local
+      REVIEW_ORCHESTRATOR_URL: ${REVIEW_ORCHESTRATOR_URL:-http://review-orchestrator:8000}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - review-orchestrator
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
