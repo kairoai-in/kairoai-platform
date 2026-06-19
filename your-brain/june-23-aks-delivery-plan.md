@@ -146,6 +146,11 @@ Move to application deployment readiness while Terraform details are paused:
 
 1. Validate Helm rendering for all active services.
 2. Add or confirm image build/push workflows for the six active services.
-3. Define the runtime Kubernetes secret creation path from current VM values to `kairoai-runtime-secrets`.
-4. Keep Terraform module implementation paused until exact IaC requirements are confirmed.
-5. Resume `kairoai-infra` only after the Azure resource shape is confirmed.
+3. Add required GitHub Actions secrets to each active service repo:
+   - `ACR_LOGIN_SERVER`
+   - `ACR_USERNAME`
+   - `ACR_PASSWORD`
+   - `KAIROAI_PACKAGE_READ_TOKEN` if `kairoai-shared` remains private.
+4. Define the runtime Kubernetes secret creation path from current VM values to `kairoai-runtime-secrets`.
+5. Keep Terraform module implementation paused until exact IaC requirements are confirmed.
+6. Resume `kairoai-infra` only after the Azure resource shape is confirmed.
