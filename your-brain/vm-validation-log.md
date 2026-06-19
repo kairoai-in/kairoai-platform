@@ -160,3 +160,27 @@ Proof:
 Notes:
 
 - This completes the first human-readable feedback loop inside the PR conversation.
+
+## 2026-06-19 09:25:35 +05:30 - Idempotent PR Validation Comment Test
+
+Validated:
+
+- Added hidden marker `<!-- kairoai:terraform-validation -->` to KairoAI PR validation comments.
+- Added GitHub Service issue-comment upsert support.
+- Restarted the Azure VM runtime stack with the new code.
+- Triggered failing `example-terraform` PR `#2` twice.
+- Confirmed the first run created the marked canonical comment.
+- Confirmed the second run did not create a third KairoAI comment.
+- Confirmed the latest Check Run still reports `FAILURE`.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Canonical marked comment URL: `https://github.com/kairoai-in/example-terraform/pull/2#issuecomment-4748353040`
+- Latest check: `KairoAI Terraform Validation` with conclusion `FAILURE`
+- Comment count after second marked run: `2` total KairoAI comments, where one is the historical unmarked comment and one is the canonical marked comment.
+
+Notes:
+
+- The old unmarked comment remains as a historical artifact from before idempotent comments were implemented.
+- Future runs should reuse the marked comment rather than adding more validation summary comments.

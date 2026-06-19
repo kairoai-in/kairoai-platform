@@ -462,3 +462,21 @@ Impact:
 - GitHub Service now supports installation-scoped issue/PR comment creation.
 - Review Orchestrator publishes a markdown summary containing status, changed Terraform files, and command exit codes.
 - The real failing PR flow on `example-terraform` PR `#2` posted a KairoAI validation comment and a failing check.
+
+## 2026-06-19 09:25:35 +05:30 - Make Validation PR Comments Idempotent
+
+Decision:
+
+- Add a hidden marker to KairoAI Terraform validation PR comments.
+- Update the existing marked comment on later runs instead of creating a new comment each time.
+
+Reason:
+
+- Pull requests can receive many `synchronize` webhooks. Reposting the same summary every run would create noisy PR conversations.
+- A stable marker keeps the implementation simple while preserving a readable visible comment body.
+
+Impact:
+
+- GitHub Service now supports issue comment upsert by marker.
+- Review Orchestrator sends marker `<!-- kairoai:terraform-validation -->` with validation comment requests.
+- Future validation runs update the marked KairoAI comment when present.
