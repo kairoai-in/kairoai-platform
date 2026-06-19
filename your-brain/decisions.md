@@ -753,3 +753,24 @@ Impact:
 - Active service workflows now expect optional `ACR_LOGIN_SERVER`, `ACR_USERNAME`, and `ACR_PASSWORD` secrets.
 - `KAIROAI_PACKAGE_READ_TOKEN` was added as a repo-level GitHub Actions secret for the six active service repos.
 - Current CI validates tests and Docker builds; ACR push starts automatically after ACR secrets are added.
+
+## 2026-06-19 19:50:00 +05:30 - Bootstrap Dev ACR For AKS Images
+
+Decision:
+
+- Manually bootstrap the dev Azure Container Registry while Terraform implementation remains paused.
+- Use `acrkairoaidev.azurecr.io` in resource group `rg-kairoai-dev`.
+- Keep ACR admin user disabled and use a scoped service principal with `AcrPush` for GitHub Actions publishing.
+
+Reason:
+
+- Service images need a real ACR before AKS deployment validation.
+- Creating only the resource group and Basic ACR keeps the manual Azure footprint small while IaC details are still being finalized.
+- A scoped push identity is safer than enabling the registry admin account.
+
+Impact:
+
+- Six active service repos now have `ACR_LOGIN_SERVER`, `ACR_USERNAME`, and `ACR_PASSWORD` Actions secrets.
+- Six active service images were pushed to ACR with both immutable SHA tags and `dev` tags.
+- Dev Helm values now point to `acrkairoaidev.azurecr.io`.
+- When Terraform resumes, this manually bootstrapped ACR should either be imported into state or replaced intentionally.
