@@ -597,3 +597,22 @@ Impact:
 - `kairoai-ai-service` defaults to `AI_PROVIDER=azure_ai_foundry`.
 - Runtime configuration will use Azure AI Foundry endpoint, deployment/model, API version, and secret-backed credentials.
 - Review Orchestrator should call AI Service after deterministic analysis to enrich PR comments, not to determine merge gates.
+
+## 2026-06-19 15:25:50 +05:30 - Prioritize AKS Delivery For June 23
+
+Decision:
+
+- Prioritize Azure AKS/IaC deployment readiness over deeper RAG, dashboard, and baseline classification work until the June 23 deployment target is met.
+- Keep baseline/RAG in the architecture direction, but do not let it block the deployable MVP.
+
+Reason:
+
+- The current PR analysis loop is validated on the Azure VM and needs to be promoted to AKS.
+- AKS deployment requires coordinated Terraform, ACR images, Helm values, secrets, ingress, and live GitHub App validation.
+- New-vs-existing baseline analysis and RAG will be more useful after the core platform runs in the target environment.
+
+Impact:
+
+- Immediate work shifts to `kairoai-infra` and `kairoai-deployments`.
+- RabbitMQ on AKS is acceptable for MVP speed, with broker configuration kept externalized for future replacement.
+- AI Service can deploy as health-only or enrichment-ready, but deterministic Terraform/Security checks remain the release-critical path.

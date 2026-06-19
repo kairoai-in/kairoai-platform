@@ -102,3 +102,22 @@ Possible additions as requirements become clearer:
 - What data retention policy should apply to Terraform plans and scan results?
 - Should AKS ingress start with NGINX Ingress Controller, Application Gateway Ingress Controller, or another ingress path?
 - Should hosted RabbitMQ run inside AKS for MVP, or should we choose a managed RabbitMQ-compatible provider?
+
+## June 23 Deployment Priority
+
+Until the 2026-06-23 AKS target is met, infrastructure work takes priority over deeper RAG, dashboard, and baseline-classification features.
+
+Release-critical Azure pieces:
+
+- AKS for workloads.
+- ACR for service images.
+- Azure Key Vault for runtime secrets.
+- Azure PostgreSQL Flexible Server for application state.
+- RabbitMQ on AKS for MVP Celery broker.
+- NGINX ingress for `api.kairoai.in`.
+- Azure Storage Account for Terraform remote state.
+- Azure Monitor / Log Analytics basics.
+
+Validation target:
+
+- Reproduce the current Azure VM GitHub App flow on AKS using `example-terraform` PR `#2`.
