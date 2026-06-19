@@ -480,3 +480,22 @@ Impact:
 - GitHub Service now supports issue comment upsert by marker.
 - Review Orchestrator sends marker `<!-- kairoai:terraform-validation -->` with validation comment requests.
 - Future validation runs update the marked KairoAI comment when present.
+
+## 2026-06-19 09:51:25 +05:30 - Maintain Helm Values In Parallel With Runtime Flow
+
+Decision:
+
+- Maintain Helm chart values in parallel with service implementation for the active validated runtime path.
+- Use the reusable `kairoai-service` chart for API services and worker processes.
+
+Reason:
+
+- Deployment shape should not lag too far behind application behavior.
+- Helm values should describe real, validated services rather than speculative future components.
+
+Impact:
+
+- Dev values now cover API Gateway, GitHub Service, Review Orchestrator, Terraform Runner, and Review Worker.
+- Runtime secrets are represented as Kubernetes secret references to `kairoai-runtime-secrets`.
+- Azure Key Vault integration remains the planned production secret source through External Secrets or CSI Secrets Store.
+- Branch protection docs now define `KairoAI Terraform Validation` as the first required-check candidate.
