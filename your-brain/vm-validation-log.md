@@ -353,3 +353,30 @@ Notes:
 
 - The current AI path uses deterministic fallback recommendations.
 - Azure AI Foundry remains the target provider adapter, but deterministic checks and fallback recommendations keep the MVP functional without model credentials.
+
+## 2026-06-19 16:00:00 +05:30 - Finding Classification Comment Test
+
+Validated:
+
+- Added shared finding classification contracts.
+- Added Review Orchestrator finding fingerprinting and classification.
+- Deployed updated shared contracts and Review Orchestrator code to the Azure VM.
+- Restarted the VM runtime stack and confirmed all six service health endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed Celery classified findings before publishing the PR comment.
+- Confirmed the canonical PR comment shows new, existing, and resolved finding counts.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `ff927f115152768fd6101cd81131812efcb77e97`
+- Review ID: `652fa960-2483-4f15-9149-2449f7ec5f34`
+- New findings: `0`
+- Existing findings: `11`
+- Resolved findings: `0`
+- AI enrichment status from Celery task: `completed`
+
+Notes:
+
+- This first classifier compares against the latest prior scan for the same PR, so repeated fixture findings are classified as existing.
+- Default-branch baseline classification is still a follow-up and should compare PR findings against the repository baseline after install/merge scans exist.

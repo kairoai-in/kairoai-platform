@@ -637,3 +637,23 @@ Impact:
 - AI Service can explain Checkov findings through fallback recommendation templates.
 - Review Orchestrator now has `AI_SERVICE_URL` and appends AI recommendations to the canonical PR comment when findings exist.
 - Helm dev values include `kairoai-ai-service` and AI Service wiring.
+
+## 2026-06-19 16:00:00 +05:30 - Classify New And Existing Findings
+
+Decision:
+
+- Add stable finding fingerprints and classify security findings as `NEW` or `EXISTING` against the latest prior scan for the same PR.
+- Show finding classification counts in the canonical PR comment.
+
+Reason:
+
+- Teams need to understand whether a PR introduces new risk or repeats already-seen findings.
+- This creates the data shape needed for default-branch baselines, dashboards, and future merge gate rules.
+- Starting with prior PR scan comparison is safe and useful before implementing full default-branch baseline jobs.
+
+Impact:
+
+- Shared contracts include `ClassifiedFinding`, `FindingClassificationResult`, and `FindingClassificationValue`.
+- Review Orchestrator persists finding classification results.
+- PR comments now include `New findings`, `Existing findings`, and `Resolved findings` counts.
+- Full default-branch baseline comparison remains a follow-up.
