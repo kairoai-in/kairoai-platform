@@ -733,3 +733,23 @@ Impact:
 - `kairoai-api-gateway` now routes `pull_request` events to review creation and default-branch `push` events to baseline refresh.
 - The public `https://api.kairoai.in/api/github/events` endpoint was validated with a signed synthetic default-branch push payload.
 - The GitHub App should keep `Push` event subscriptions enabled for automatic baseline refresh.
+
+## 2026-06-19 19:35:00 +05:30 - Prepare Service CI For ACR Image Publishing
+
+Decision:
+
+- Extend the six active service CI workflows to build Docker images and publish to ACR on `main` when ACR secrets are configured.
+- Keep PR/main tests and local Docker image builds required regardless of ACR availability.
+- Skip ACR publishing with a workflow notice when ACR secrets are not present.
+
+Reason:
+
+- AKS deployment needs immutable service images in ACR.
+- We do not have final ACR credentials yet, so CI should stay green while still being ready to publish once secrets are added.
+- Private `kairoai-shared` installs need a package-read token in each service repo.
+
+Impact:
+
+- Active service workflows now expect optional `ACR_LOGIN_SERVER`, `ACR_USERNAME`, and `ACR_PASSWORD` secrets.
+- `KAIROAI_PACKAGE_READ_TOKEN` was added as a repo-level GitHub Actions secret for the six active service repos.
+- Current CI validates tests and Docker builds; ACR push starts automatically after ACR secrets are added.
