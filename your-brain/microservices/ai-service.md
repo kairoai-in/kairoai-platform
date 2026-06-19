@@ -19,6 +19,7 @@ Generate health scores, merge decisions, summaries, recommendations, and suggest
 
 ## MVP Endpoints
 
+- `POST /ai/findings/explain`
 - `POST /ai/score`
 - `POST /ai/merge-decision`
 - `POST /ai/recommendations`
@@ -44,6 +45,7 @@ Generate health scores, merge decisions, summaries, recommendations, and suggest
 
 ## MVP Deliverables
 
+- Finding explanation endpoint with deterministic fallback.
 - Deterministic scoring engine.
 - Rule-based merge decision.
 - AI prompt templates.

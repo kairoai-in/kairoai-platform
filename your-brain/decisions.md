@@ -616,3 +616,24 @@ Impact:
 - Immediate work shifts to `kairoai-infra` and `kairoai-deployments`.
 - RabbitMQ on AKS is acceptable for MVP speed, with broker configuration kept externalized for future replacement.
 - AI Service can deploy as health-only or enrichment-ready, but deterministic Terraform/Security checks remain the release-critical path.
+
+## 2026-06-19 15:45:00 +05:30 - Add AI Finding Enrichment Contract And Fallback
+
+Decision:
+
+- Add a first AI enrichment endpoint for finding explanations: `POST /ai/findings/explain`.
+- Use deterministic fallback recommendations until Azure AI Foundry credentials and adapter behavior are finalized.
+- Wire Review Orchestrator to call AI Service after Security Service and include concise recommendations in the PR comment.
+
+Reason:
+
+- Deterministic scanners should continue to own pass/fail decisions.
+- Users need plain-English remediation guidance in addition to raw Checkov rule names.
+- A fallback keeps the product useful if Azure AI Foundry is not configured or temporarily unavailable.
+
+Impact:
+
+- Shared contracts now include finding explanation request/result models.
+- AI Service can explain Checkov findings through fallback recommendation templates.
+- Review Orchestrator now has `AI_SERVICE_URL` and appends AI recommendations to the canonical PR comment when findings exist.
+- Helm dev values include `kairoai-ai-service` and AI Service wiring.
