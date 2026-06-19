@@ -558,3 +558,23 @@ Impact:
 - GitHub Service forwards `output.annotations` when creating Check Runs.
 - Review Orchestrator maps security finding severities to GitHub annotation levels.
 - `example-terraform` PR `#2` shows 11 inline annotations on `security_fixture.tf`.
+
+## 2026-06-19 14:55:00 +05:30 - Make Azure And AWS First-Class MVP Providers
+
+Decision:
+
+- Focus the MVP security/governance experience on Azure and AWS first.
+- Keep shared findings, scanner interfaces, comments, checks, and dashboard plans provider-extensible.
+
+Reason:
+
+- Azure is the primary deployment and customer-cloud target for the current platform direction.
+- AWS is useful for broad Terraform coverage and known Checkov validation fixtures.
+- Hardcoding only one provider would make the product brittle; trying to polish every provider now would slow the MVP.
+
+Impact:
+
+- Security fixtures should include both `CKV_AZURE_*` and `CKV_AWS_*` examples.
+- AI enrichment should eventually produce provider-specific remediation examples for Azure and AWS.
+- Governance policies should start with Azure/AWS naming, tagging, region, encryption, and network exposure rules.
+- GCP, Kubernetes, Helm, and other IaC frameworks remain supported by the normalized model but are not first-class MVP polish targets yet.

@@ -296,3 +296,30 @@ Proof:
 Notes:
 
 - Terraform check annotations are still pending because Terraform fmt/validate output currently needs a parser to map messages to exact file/line positions.
+
+## 2026-06-19 14:58:00 +05:30 - Inline Terraform Check Annotation Test
+
+Validated:
+
+- Added Terraform fmt and validate output parsing in Review Orchestrator.
+- Deployed the updated Review Orchestrator source to the Azure VM.
+- Restarted the VM runtime stack and confirmed all service health endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed the live analysis task created Terraform and Security Check Runs.
+- Confirmed the Terraform Check Run includes an inline annotation for the fmt failure.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `d50883f8fce2f215e07094f9557655c12df21aee`
+- Review ID: `a8c6fde8-17dd-448e-b3fb-f63107740dda`
+- Terraform Check Run ID: `82322089582`
+- Terraform Check Run annotations count: `1`
+- Annotated file: `main.tf`
+- Annotation title: `terraform fmt`
+- Annotation message: `Terraform formatting is required for this file.`
+
+Notes:
+
+- `terraform fmt -check` only reports filenames, so the MVP annotates line `1` for formatting failures.
+- `terraform validate` parsing supports exact line annotations when Terraform emits `on <file>.tf line <n>` diagnostics.
