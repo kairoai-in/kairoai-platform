@@ -43,6 +43,7 @@ services:
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-rpc://}
       ENABLE_TASK_DISPATCH: ${ENABLE_TASK_DISPATCH:-false}
       GITHUB_SERVICE_URL: ${GITHUB_SERVICE_URL:-http://github-service:8000}
+      TERRAFORM_RUNNER_URL: ${TERRAFORM_RUNNER_URL:-http://terraform-runner:8000}
     ports:
       - "8001:8000"
     depends_on:
@@ -51,6 +52,8 @@ services:
       rabbitmq:
         condition: service_healthy
       github-service:
+        condition: service_started
+      terraform-runner:
         condition: service_started
 
   review-worker:
@@ -64,11 +67,14 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://kairoai:kairoai@postgres:5432/kairoai}
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-amqp://kairoai:kairoai@rabbitmq:5672//}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-rpc://}
+      TERRAFORM_RUNNER_URL: ${TERRAFORM_RUNNER_URL:-http://terraform-runner:8000}
     depends_on:
       rabbitmq:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      terraform-runner:
+        condition: service_started
 
   api-gateway:
     build:
@@ -97,6 +103,20 @@ services:
       GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
     ports:
       - "8002:8000"
+
+  terraform-runner:
+    build:
+      context: ../kairoai-terraform-runner
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    environment:
+      ENVIRONMENT: local
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      GITHUB_API_BASE_URL: ${GITHUB_API_BASE_URL:-https://api.github.com}
+      TERRAFORM_BINARY: ${TERRAFORM_BINARY:-terraform}
+    ports:
+      - "8003:8000"
 
 volumes:
   postgres-data:

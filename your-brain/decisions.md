@@ -406,3 +406,23 @@ Impact:
 - The repository default branch is `main`.
 - The repo contains a minimal `null_resource` Terraform configuration.
 - After the GitHub App is installed on this repo, creating or updating a pull request should trigger the first real end-to-end review flow.
+
+## 2026-06-19 07:22:42 +05:30 - Add First Real Terraform Validation Worker Path
+
+Decision:
+
+- Add a `POST /terraform/validate` API to `kairoai-terraform-runner`.
+- Replace the Review Orchestrator Celery placeholder with a call to Terraform Runner.
+- Persist Terraform validation results in Review Orchestrator PostgreSQL storage.
+
+Reason:
+
+- The webhook-to-review flow is proven, and the next useful product behavior is validating changed Terraform automatically.
+- Keeping Terraform execution in a dedicated service preserves isolation from orchestration and prepares for later plan/security/cost workers.
+
+Impact:
+
+- Shared contracts now include `TerraformValidationRequest`, `TerraformValidationResult`, `TerraformCommandResult`, and `TerraformValidationStatus`.
+- Terraform Runner can clone an installed GitHub App repository using installation-scoped credentials and run `terraform init -backend=false`, `terraform fmt -check -recursive`, and `terraform validate -no-color`.
+- Review Orchestrator exposes `GET /reviews/{review_id}/terraform-validation` for the latest persisted validation result.
+- Local Compose now includes `terraform-runner` on port `8003` and wires `TERRAFORM_RUNNER_URL` into Review Orchestrator and the Celery worker.
