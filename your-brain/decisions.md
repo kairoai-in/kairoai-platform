@@ -817,3 +817,23 @@ Impact:
 - Review Worker can consume `review-analysis` with the same queue-scoped connection string.
 - Runtime secret `service-bus-connection-string` must be added to `kairoai-runtime-secrets`.
 - When Terraform resumes, this manually bootstrapped Service Bus namespace and queue should either be imported into state or replaced intentionally.
+
+## 2026-06-20 00:45:00 +05:30 - Define Dev AKS Runtime Secret Creation Path
+
+Decision:
+
+- Create a dev helper script for generating `kairoai-runtime-secrets` in Kubernetes.
+- Keep real secret values out of git and use environment variables at execution time.
+- Fetch the queue-scoped Service Bus connection string from Azure when `SERVICE_BUS_CONNECTION_STRING` is not already set.
+
+Reason:
+
+- AKS deployment needs a repeatable way to load GitHub App, PostgreSQL, Service Bus, and Azure AI Foundry runtime values.
+- The current dev path should work before Key Vault/External Secrets is fully wired.
+- Service Bus secret wiring should be explicit now that RabbitMQ is no longer the hosted broker.
+
+Impact:
+
+- `kairoai-deployments/scripts/create-dev-runtime-secret.ps1` creates or updates `kairoai-runtime-secrets`.
+- `kairoai-deployments/envs/dev/runtime-secrets.example.env` documents the required secret keys without storing values.
+- Long-term production should move this to Azure Key Vault-backed secret sync.

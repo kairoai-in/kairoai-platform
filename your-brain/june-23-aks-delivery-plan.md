@@ -151,6 +151,6 @@ Move to application deployment readiness while Terraform details are paused:
    - `ACR_USERNAME`
    - `ACR_PASSWORD`
    - `KAIROAI_PACKAGE_READ_TOKEN` if `kairoai-shared` remains private.
-4. Define the runtime Kubernetes secret creation path from current VM values to `kairoai-runtime-secrets`.
+4. Use `kairoai-deployments/scripts/create-dev-runtime-secret.ps1` to create `kairoai-runtime-secrets` from local env values and the dev Service Bus queue connection string.
 5. Keep Terraform module implementation paused until exact IaC requirements are confirmed.
 6. Resume `kairoai-infra` only after the Azure resource shape is confirmed.
