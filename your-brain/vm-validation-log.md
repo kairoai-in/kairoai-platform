@@ -63,3 +63,30 @@ Notes:
 
 - GitHub Service tests were run on the VM because the local Windows Python environment does not have `PyJWT` and `cryptography` installed.
 - The real GitHub App has not been created yet.
+
+## 2026-06-19 07:36:00 +05:30 - Real Terraform Validation Worker Test
+
+Validated:
+
+- Installed Terraform `v1.8.5` on the Azure VM test host.
+- Started `kairoai-terraform-runner` on port `8003`.
+- Restarted API Gateway, GitHub Service, Review Orchestrator, Terraform Runner, and Celery with the VM runtime env.
+- Pushed a new Terraform change to `kairoai-in/example-terraform` PR `#1`.
+- Confirmed GitHub sent a `pull_request.synchronize` webhook to API Gateway.
+- Confirmed Review Orchestrator fetched changed Terraform files through GitHub Service.
+- Confirmed Celery called Terraform Runner.
+- Confirmed Terraform Runner returned `PASSED`.
+- Confirmed Review Orchestrator persisted the Terraform validation result in PostgreSQL.
+
+Proof:
+
+- Review ID: `1db24212-eb47-464c-b632-9b78056d9dd0`
+- Changed Terraform files: `main.tf`, `variables.tf`
+- `terraform init -backend=false`: exit code `0`
+- `terraform fmt -check -recursive`: exit code `0`
+- `terraform validate -no-color`: exit code `0`
+
+Notes:
+
+- This validates the first real analysis worker path after the original placeholder Celery task.
+- The next useful product step is publishing this result back to GitHub as a Check Run or PR comment.
