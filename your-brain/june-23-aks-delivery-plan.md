@@ -13,7 +13,7 @@ MVP flow to preserve:
 - Default-branch security baseline classification.
 - Unified idempotent PR comment.
 - PostgreSQL-backed review state.
-- RabbitMQ/Celery async worker flow.
+- Azure Service Bus async worker flow.
 
 ## Scope Priority
 
@@ -35,9 +35,9 @@ MVP flow to preserve:
   - Terraform Runner.
   - Security Service.
   - AI Service placeholder or health-only deployment if enrichment is not wired yet.
-- RabbitMQ deployment strategy for MVP:
-  - Prefer RabbitMQ in AKS for June 23 speed.
-  - Keep broker config externalized so it can move later.
+- Azure Service Bus deployment strategy for MVP:
+  - Use Service Bus queue `review-analysis` for hosted review dispatch.
+  - Keep Celery/RabbitMQ only for local or VM compatibility until retired.
 - NGINX ingress for `api.kairoai.in`.
 - GitHub App webhook URL pointed at AKS ingress after validation.
 - GitHub App `pull_request` and `push` event subscriptions enabled for PR reviews and default-branch baseline refresh.
@@ -68,7 +68,7 @@ MVP flow to preserve:
 - Finish documenting Azure/AWS provider focus and Azure AI Foundry direction.
 - Freeze MVP service list for AKS deployment.
 - Review Terraform and Helm gaps.
-- Decide RabbitMQ-on-AKS for MVP unless a managed RabbitMQ option is immediately available.
+- Align hosted worker dispatch with Azure Service Bus instead of RabbitMQ.
 
 ### June 20
 
@@ -86,7 +86,7 @@ MVP flow to preserve:
 
 - Build and push service images to ACR.
 - Finalize Helm values for dev AKS.
-- Deploy RabbitMQ, API services, worker, Terraform Runner, Security Service.
+- Deploy API services, Service Bus-backed worker, Terraform Runner, Security Service.
 - Create Kubernetes secrets from current runtime env values.
 - Validate internal service health.
 
@@ -124,7 +124,7 @@ Internal services:
 State:
 
 - PostgreSQL Flexible Server for review and analysis data.
-- RabbitMQ for Celery broker.
+- Azure Service Bus for review dispatch.
 - Kubernetes secrets or Key Vault-backed secrets for runtime credentials.
 
 Images:
@@ -136,7 +136,7 @@ Images:
 
 - Keep deterministic checks independent from AI.
 - Do not block AKS deployment on Azure AI Foundry.
-- Keep RabbitMQ swappable through environment config.
+- Keep the queue provider behind dispatch configuration.
 - Use GitHub PR #2 as the failing validation fixture.
 - Keep the Azure VM as a fallback/debug reference until AKS flow is validated.
 

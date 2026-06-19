@@ -774,3 +774,24 @@ Impact:
 - Six active service images were pushed to ACR with both immutable SHA tags and `dev` tags.
 - Dev Helm values now point to `acrkairoaidev.azurecr.io`.
 - When Terraform resumes, this manually bootstrapped ACR should either be imported into state or replaced intentionally.
+
+## 2026-06-20 00:05:00 +05:30 - Use Azure Service Bus For Hosted Async Dispatch
+
+Decision:
+
+- Use Azure Service Bus as the hosted Azure broker for review analysis dispatch.
+- Keep Celery/RabbitMQ only as a local or VM compatibility path until fully retired.
+- Add a dispatch abstraction so Review Orchestrator can publish to Service Bus in AKS without changing review creation behavior.
+
+Reason:
+
+- Azure Service Bus is the required Azure-native queue direction for the hosted deployment.
+- Avoiding RabbitMQ in AKS reduces one stateful workload we would otherwise operate ourselves.
+- Keeping the dispatch boundary abstract lets local development continue while AKS moves to Service Bus.
+
+Impact:
+
+- The earlier RabbitMQ MVP decision is superseded for hosted Azure environments.
+- `kairoai-review-orchestrator` should support `TASK_DISPATCH_PROVIDER=azure_service_bus`.
+- AKS Helm values should use `SERVICE_BUS_CONNECTION_STRING` and queue `review-analysis`.
+- Terraform/IaC should provision Azure Service Bus namespace, queue, and secret wiring when IaC resumes.

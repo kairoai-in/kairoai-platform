@@ -28,7 +28,8 @@ Coordinate review jobs across all analysis services.
 ## Dependencies
 
 - PostgreSQL.
-- RabbitMQ with Celery.
+- Azure Service Bus for hosted dispatch.
+- Celery/RabbitMQ for local compatibility while the migration is completed.
 - GitHub Service.
 - Terraform Runner.
 - Security Service.
@@ -43,6 +44,9 @@ Coordinate review jobs across all analysis services.
 - `DATABASE_URL`
 - `CELERY_BROKER_URL`
 - `CELERY_RESULT_BACKEND`
+- `TASK_DISPATCH_PROVIDER`
+- `SERVICE_BUS_CONNECTION_STRING`
+- `SERVICE_BUS_QUEUE_NAME`
 - `GITHUB_SERVICE_URL`
 - `TERRAFORM_RUNNER_URL`
 - `SECURITY_SERVICE_URL`

@@ -7,14 +7,14 @@ Define the infrastructure path for running the KairoAI platform from local MVP t
 ## MVP Infrastructure
 
 - Use Docker Compose for local development.
-- Run the API service, worker service, PostgreSQL, and RabbitMQ locally.
+- Run the API service, worker service, PostgreSQL, and local queue compatibility services where needed.
 - Use local mounted workspaces for Terraform analysis jobs during development.
 - Store secrets in local `.env` files that are not committed.
 
 ## Core Runtime Components
 
 - PostgreSQL for reviews, findings, scores, GitHub installation metadata, and job history.
-- RabbitMQ with Celery for background jobs and async workflow dispatch.
+- Azure Service Bus for hosted background jobs and async workflow dispatch.
 - Containerized analysis tools:
   - Terraform CLI.
   - Checkov.
@@ -90,7 +90,7 @@ First production direction:
 
 Possible additions as requirements become clearer:
 
-- RabbitMQ on AKS or a RabbitMQ-compatible managed service if selected later.
+- Azure Service Bus namespace and queue for hosted review dispatch.
 - Azure Cache for Redis only if caching is needed later.
 - Azure Blob Storage for analysis artifacts.
 - Azure Front Door or Application Gateway for ingress strategy.
@@ -101,7 +101,7 @@ Possible additions as requirements become clearer:
 - What is the first acceptable isolation model for customer repository code?
 - What data retention policy should apply to Terraform plans and scan results?
 - Should AKS ingress start with NGINX Ingress Controller, Application Gateway Ingress Controller, or another ingress path?
-- Should hosted RabbitMQ run inside AKS for MVP, or should we choose a managed RabbitMQ-compatible provider?
+- What Service Bus SKU, namespace name, queue settings, retry/dead-letter behavior, and identity model should dev use?
 
 ## June 23 Deployment Priority
 
@@ -113,7 +113,7 @@ Release-critical Azure pieces:
 - ACR for service images.
 - Azure Key Vault for runtime secrets.
 - Azure PostgreSQL Flexible Server for application state.
-- RabbitMQ on AKS for MVP Celery broker.
+- Azure Service Bus queue `review-analysis` for hosted worker dispatch.
 - NGINX ingress for `api.kairoai.in`.
 - Azure Storage Account for Terraform remote state.
 - Azure Monitor / Log Analytics basics.

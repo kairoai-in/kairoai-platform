@@ -143,7 +143,7 @@ Use these abstractions:
 | Need | Portable Interface | Azure First Implementation | Local/Test Implementation |
 | --- | --- | --- | --- |
 | Secrets | Secret provider | Azure Key Vault | `.env` or local secret file |
-| Queue | Job/event queue | RabbitMQ with Celery | RabbitMQ container |
+| Queue | Job/event queue | Azure Service Bus for hosted Azure, Celery/RabbitMQ for local compatibility | Service Bus in Azure, RabbitMQ container locally only if needed |
 | Database | SQL persistence | Azure Database for PostgreSQL Flexible Server | PostgreSQL container |
 | Object storage | Artifact store | Azure Blob Storage | Local filesystem or MinIO |
 | Container runtime | OCI containers | AKS | Docker Compose |
@@ -157,7 +157,8 @@ First Azure target:
 - AKS for running services.
 - Azure Key Vault for secrets.
 - Azure Database for PostgreSQL Flexible Server for durable platform state.
-- RabbitMQ with Celery for MVP queueing and async jobs.
+- Azure Service Bus for hosted MVP queueing and async jobs.
+- Celery/RabbitMQ may remain as a local compatibility path while the Service Bus worker matures.
 - Azure Container Registry for service images.
 - Azure Blob Storage for non-sensitive artifacts if needed.
 - Azure Monitor and Application Insights for logs, metrics, and traces.
@@ -256,7 +257,7 @@ Recommended backend:
 - Python FastAPI for API-facing services.
 - Python workers for scanner-heavy services.
 - PostgreSQL for state.
-- RabbitMQ with Celery for MVP queueing.
+- Azure Service Bus for hosted MVP queueing.
 - Pydantic for contracts.
 - OpenTelemetry for tracing.
 
@@ -297,7 +298,7 @@ Platform/deployment repos:
 - Confirm repository list before creation.
 - Confirm backend stack: Python FastAPI or Node.js NestJS.
 - Confirm whether `kairoai-platform` remains a coordination repo only or also contains local compose and integration tests.
-- Confirm hosted RabbitMQ strategy: RabbitMQ on AKS first or managed RabbitMQ-compatible broker later.
+- Confirm Azure Service Bus namespace, queue, auth, and secret wiring.
 
 ## My Recommendation For Next Step
 
@@ -306,7 +307,7 @@ Proceed like this:
 1. Create the first-wave repositories listed above.
 2. Keep `kairoai-platform` as the central coordination and local integration repo.
 3. Use Python FastAPI for MVP services.
-4. Use RabbitMQ with Celery locally and in MVP, while keeping broker details behind task/queue adapters.
+4. Use Azure Service Bus for hosted async dispatch, while keeping broker details behind task/queue adapters.
 5. Use Azure AKS, Key Vault, PostgreSQL Flexible Server, ACR, and Azure Monitor as the production direction.
 6. Create `kairoai-shared` early so contracts stay clean before services diverge.
 7. Delay dashboard, drift detection, module reuse, and auto-remediation until the PR review loop works end to end.
