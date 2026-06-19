@@ -499,3 +499,23 @@ Impact:
 - Runtime secrets are represented as Kubernetes secret references to `kairoai-runtime-secrets`.
 - Azure Key Vault integration remains the planned production secret source through External Secrets or CSI Secrets Store.
 - Branch protection docs now define `KairoAI Terraform Validation` as the first required-check candidate.
+
+## 2026-06-19 10:03:55 +05:30 - Add Security Service To Review Analysis Fan-Out
+
+Decision:
+
+- Add `kairoai-security-service` as the next analysis worker after Terraform validation.
+- Start security scanning with Checkov and normalize results into shared `Finding` contracts.
+
+Reason:
+
+- Terraform validation proves syntax and formatting, but the product also needs security findings to deliver meaningful infrastructure review value.
+- Checkov is a practical first scanner for Terraform IaC and can run locally, in Docker, and in AKS.
+
+Impact:
+
+- Shared contracts now include `SecurityScanRequest`, `SecurityScanResult`, and `SecurityScanStatus`.
+- Security Service exposes `POST /security/scan`.
+- Review Orchestrator calls Security Service from the Celery review task and persists `security_scan_results`.
+- PR comments can include security scan status and blocking findings.
+- Platform Compose and dev Helm values now include `security-service`.
