@@ -138,3 +138,25 @@ Notes:
 
 - This proves the first merge-gate-ready negative path.
 - PR `#2` is intentionally left failing as a visible test fixture unless we decide to close or fix it.
+
+## 2026-06-19 08:16:28 +05:30 - PR Validation Comment Publishing Test
+
+Validated:
+
+- Added GitHub Service support for installation-scoped issue comments.
+- Added Review Orchestrator PR summary comment publishing after Terraform validation.
+- Restarted the Azure VM runtime stack with the new code.
+- Pushed another update to failing `example-terraform` PR `#2`.
+- Confirmed the full flow created both a failing Check Run and a PR comment.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Review ID: `031dfda3-8bd6-4046-a956-a96476da4fc2`
+- GitHub check: `KairoAI Terraform Validation` with conclusion `FAILURE`
+- GitHub comment URL: `https://github.com/kairoai-in/example-terraform/pull/2#issuecomment-4748016212`
+- Comment includes changed file `main.tf` and command exit codes: init `0`, fmt `3`, validate `0`.
+
+Notes:
+
+- This completes the first human-readable feedback loop inside the PR conversation.

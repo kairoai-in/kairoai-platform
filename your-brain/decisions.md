@@ -444,3 +444,21 @@ Impact:
 - Review Orchestrator publishes the check after Terraform validation is persisted.
 - `PASSED` maps to GitHub `success`, `FAILED` maps to `failure`, and runtime `ERROR` maps to `neutral` for the first MVP behavior.
 - The real `example-terraform` PR flow created a passing `KairoAI Terraform Validation` check on PR `#1`.
+
+## 2026-06-19 08:16:28 +05:30 - Add GitHub App Logo And PR Validation Comments
+
+Decision:
+
+- Store the generated GitHub App logo at `docs/assets/kairoai-logo-github-app.png`.
+- Publish a concise PR comment after Terraform validation, in addition to the GitHub Check Run.
+
+Reason:
+
+- The GitHub App needs a recognizable app avatar for trust and polish.
+- Check Runs are good for merge status, while PR comments explain validation outcomes directly in the conversation.
+
+Impact:
+
+- GitHub Service now supports installation-scoped issue/PR comment creation.
+- Review Orchestrator publishes a markdown summary containing status, changed Terraform files, and command exit codes.
+- The real failing PR flow on `example-terraform` PR `#2` posted a KairoAI validation comment and a failing check.
