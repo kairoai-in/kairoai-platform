@@ -21,6 +21,7 @@ Coordinate review jobs across all analysis services.
 
 - `POST /reviews`
 - `GET /reviews/{review_id}`
+- `POST /baselines/security`
 - `POST /reviews/{review_id}/rerun`
 - `POST /reviews/{review_id}/events`
 
@@ -69,7 +70,12 @@ Coordinate review jobs across all analysis services.
 - Calls GitHub Service to fetch Terraform-only changed files.
 - Persists changed Terraform files.
 - Exposes `GET /reviews/{reviewId}/terraform-files`.
-- Dispatches placeholder Celery task when enabled.
+- Dispatches Celery analysis tasks when enabled.
+- Calls Terraform Runner, Security Service, AI Service, and GitHub Service during the active review flow.
+- Persists security scans and finding classification results.
+- Persists repository security baselines from default-branch scans.
+- Publishes separate Terraform and Security GitHub Check Runs with annotations.
+- Updates the canonical idempotent PR comment.
 
 ## Risks
 

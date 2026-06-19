@@ -15,6 +15,7 @@ Provide the public entrypoint for KairoAI APIs and GitHub webhooks.
 - Expose health and readiness endpoints.
 - Validate incoming payloads.
 - Create or forward review requests to the Review Orchestrator.
+- Forward default-branch push events to repository baseline refresh.
 - Enforce public API authentication later.
 
 ## MVP Endpoints
@@ -58,5 +59,7 @@ Provide the public entrypoint for KairoAI APIs and GitHub webhooks.
 
 - `POST /api/github/events` for pull request webhooks.
 - Supported pull request actions: `opened`, `synchronize`, `reopened`, `ready_for_review`.
+- Supported push behavior: default-branch pushes refresh the repository security baseline.
+- Non-default-branch pushes are accepted and ignored.
 - Optional `X-Hub-Signature-256` verification when `GITHUB_WEBHOOK_SECRET` is configured.
 - Forwarding to Review Orchestrator review creation.

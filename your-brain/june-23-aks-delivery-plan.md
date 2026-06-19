@@ -40,6 +40,7 @@ MVP flow to preserve:
   - Keep broker config externalized so it can move later.
 - NGINX ingress for `api.kairoai.in`.
 - GitHub App webhook URL pointed at AKS ingress after validation.
+- GitHub App `pull_request` and `push` event subscriptions enabled for PR reviews and default-branch baseline refresh.
 - ACR image build/push path from CI or manual fallback.
 - Runtime secrets stored outside git and loaded into AKS through Kubernetes secrets or Key Vault integration.
 - End-to-end PR #2 validation against AKS.
@@ -115,6 +116,7 @@ Ingress:
 Internal services:
 
 - API Gateway calls Review Orchestrator.
+- API Gateway forwards default-branch push events to Review Orchestrator baseline refresh.
 - Review Orchestrator/Celery calls GitHub Service, Terraform Runner, Security Service, AI Service later.
 - GitHub Service calls GitHub APIs using GitHub App credentials.
 - Terraform Runner and Security Service clone repositories using installation tokens.
@@ -140,9 +142,10 @@ Images:
 
 ## Immediate Next Action
 
-Move to infra/deployment readiness:
+Move to application deployment readiness while Terraform details are paused:
 
-1. Audit `kairoai-infra` Terraform modules against the must-have Azure resource list.
-2. Patch missing AKS/ACR/Key Vault/PostgreSQL outputs and variables.
-3. Audit `kairoai-deployments` Helm values against the active VM service list.
-4. Add AI Service values as health-only deployment if not yet present.
+1. Validate Helm rendering for all active services.
+2. Add or confirm image build/push workflows for the six active services.
+3. Define the runtime Kubernetes secret creation path from current VM values to `kairoai-runtime-secrets`.
+4. Keep Terraform module implementation paused until exact IaC requirements are confirmed.
+5. Resume `kairoai-infra` only after the Azure resource shape is confirmed.
