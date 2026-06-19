@@ -519,3 +519,23 @@ Impact:
 - Review Orchestrator calls Security Service from the Celery review task and persists `security_scan_results`.
 - PR comments can include security scan status and blocking findings.
 - Platform Compose and dev Helm values now include `security-service`.
+
+## 2026-06-19 13:23:04 +05:30 - Split Terraform And Security GitHub Checks
+
+Decision:
+
+- Publish Terraform validation and security scanning as separate GitHub Check Runs:
+  - `KairoAI Terraform Validation`
+  - `KairoAI Security Scan`
+
+Reason:
+
+- Terraform syntax/format failures and security findings are different gate categories.
+- Separate check names let branch protection require each gate independently.
+- The PR comment should stay unified for readability, while checks remain machine-gateable.
+
+Impact:
+
+- Review Orchestrator now publishes two Check Runs after a review analysis task finishes.
+- The canonical PR comment still combines Terraform and Security summaries.
+- `example-terraform` PR `#2` now shows both checks failing independently on the same commit.

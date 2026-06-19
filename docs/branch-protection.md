@@ -1,12 +1,13 @@
 # Branch Protection
 
-KairoAI publishes a GitHub Check Run named:
+KairoAI publishes separate GitHub Check Runs for independently gateable analysis stages:
 
 ```text
 KairoAI Terraform Validation
+KairoAI Security Scan
 ```
 
-Use this check as the first MVP merge gate for Terraform pull requests.
+Use these checks as the first MVP merge gates for Terraform pull requests.
 
 ## Recommended Rule
 
@@ -15,6 +16,7 @@ For repositories using KairoAI:
 - Require a pull request before merging.
 - Require status checks to pass before merging.
 - Require the `KairoAI Terraform Validation` check.
+- Require the `KairoAI Security Scan` check.
 - Require branches to be up to date before merging once CI is stable.
 
 ## Manual Setup
@@ -26,7 +28,8 @@ In GitHub:
 3. Create or edit the rule for `main`.
 4. Enable required status checks.
 5. Select `KairoAI Terraform Validation`.
-6. Save the rule.
+6. Select `KairoAI Security Scan`.
+7. Save the rule.
 
 ## Current Test Repositories
 

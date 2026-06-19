@@ -245,3 +245,28 @@ Notes:
 
 - This proves blocking security findings are visible in the developer PR workflow.
 - Today the single GitHub Check Run remains named `KairoAI Terraform Validation`; a useful next improvement is splitting or renaming checks so Terraform and Security statuses are independently clear in branch protection.
+
+## 2026-06-19 13:23:04 +05:30 - Split GitHub Check Runs Test
+
+Validated:
+
+- Added a separate `KairoAI Security Scan` GitHub Check Run publisher in Review Orchestrator.
+- Kept the canonical PR comment unified and idempotent.
+- Deployed the updated Review Orchestrator source to the Azure VM.
+- Restarted the VM runtime stack and confirmed all health endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed Celery called GitHub Service twice for Check Run creation.
+- Confirmed GitHub shows separate `KairoAI Terraform Validation` and `KairoAI Security Scan` checks.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `b8f0431dc9bced0f9fc054de9af363e1eb0b42cb`
+- Review ID: `f749bc5a-7e59-4ed1-b9a3-e2ad949eec3c`
+- `KairoAI Terraform Validation`: `FAILURE`
+- `KairoAI Security Scan`: `FAILURE`
+- Security findings in canonical PR comment: `11`
+
+Notes:
+
+- Branch protection can now require Terraform and Security gates independently.
