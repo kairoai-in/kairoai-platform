@@ -714,3 +714,22 @@ Impact:
 - Review Orchestrator exposes `POST /baselines/security` and persists repository baseline results.
 - PR finding classification now uses the repository baseline first and falls back to the latest prior PR scan when no baseline exists.
 - The live `example-terraform` PR `#2` now reports all 22 Azure/AWS fixture findings as new against the clean `main` baseline.
+
+## 2026-06-19 18:35:00 +05:30 - Refresh Security Baseline From Default-Branch Push Webhooks
+
+Decision:
+
+- Handle GitHub `push` webhooks in API Gateway when the push targets the repository default branch.
+- Forward default-branch pushes to Review Orchestrator's security baseline endpoint.
+- Continue ignoring non-default-branch pushes.
+
+Reason:
+
+- Default branch baselines should update when protected branch code changes, without requiring manual API calls.
+- PR webhooks should stay focused on review creation, while push webhooks maintain repository baseline state.
+
+Impact:
+
+- `kairoai-api-gateway` now routes `pull_request` events to review creation and default-branch `push` events to baseline refresh.
+- The public `https://api.kairoai.in/api/github/events` endpoint was validated with a signed synthetic default-branch push payload.
+- The GitHub App should keep `Push` event subscriptions enabled for automatic baseline refresh.

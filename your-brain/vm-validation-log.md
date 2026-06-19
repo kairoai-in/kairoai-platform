@@ -444,3 +444,29 @@ Notes:
 
 - The old unmarked KairoAI PR comment remains as a historical artifact from before idempotent comments were implemented.
 - Future runs should continue updating the marked canonical comment.
+
+## 2026-06-19 18:35:00 +05:30 - Default Branch Push Baseline Refresh Test
+
+Validated:
+
+- Added API Gateway support for GitHub `push` webhooks.
+- Deployed the updated API Gateway source to the Azure VM.
+- Restarted the VM runtime stack and confirmed API Gateway, Review Orchestrator, and Security Service health endpoints returned `ok`.
+- Sent a signed synthetic `push` webhook to the public `https://api.kairoai.in/api/github/events` endpoint.
+- Confirmed default-branch push handling called Review Orchestrator baseline creation.
+- Confirmed the baseline scan completed successfully.
+
+Proof:
+
+- Event: `push`
+- Delivery ID: `manual-baseline-push-validation`
+- Branch: `main`
+- Commit: `33ac6b1fc7d65fda0f2d5c10fabb72317835c2a0`
+- Baseline review ID: `36e653b0-4ce8-451b-9c2b-8b15704bd8b5`
+- Baseline security status: `PASSED`
+- Baseline findings: `0`
+
+Notes:
+
+- Non-default-branch pushes are accepted but ignored.
+- The GitHub App should keep the `push` event subscription enabled so baselines refresh automatically after `main` changes.
