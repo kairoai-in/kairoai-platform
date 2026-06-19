@@ -323,3 +323,33 @@ Notes:
 
 - `terraform fmt -check` only reports filenames, so the MVP annotates line `1` for formatting failures.
 - `terraform validate` parsing supports exact line annotations when Terraform emits `on <file>.tf line <n>` diagnostics.
+
+## 2026-06-19 15:40:00 +05:30 - AI Finding Recommendation Test
+
+Validated:
+
+- Added AI explanation contracts to shared models.
+- Added `POST /ai/findings/explain` to AI Service with deterministic fallback recommendations.
+- Wired Review Orchestrator to call AI Service after Security Service.
+- Updated the VM runtime stack to start `kairoai-ai-service` on port `8005`.
+- Confirmed all six VM service health endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed Celery called AI Service after Checkov scanning.
+- Confirmed the canonical PR comment includes an `AI Recommendations` section.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `cc20f80f58290ed3db535d9bfd9102bb99c73adc`
+- Review ID: `9be4ba0e-c559-4a98-875e-7799044cd7eb`
+- AI endpoint: `POST /ai/findings/explain`
+- AI enrichment status from Celery task: `completed`
+- Comment recommendation examples:
+  - `CKV_AWS_54` Enable S3 public access blocking and avoid public bucket policies unless explicitly approved.
+  - `CKV_AWS_53` Enable S3 public access blocking and avoid public bucket policies unless explicitly approved.
+  - `CKV_AWS_55` Enable S3 public access blocking and avoid public bucket policies unless explicitly approved.
+
+Notes:
+
+- The current AI path uses deterministic fallback recommendations.
+- Azure AI Foundry remains the target provider adapter, but deterministic checks and fallback recommendations keep the MVP functional without model credentials.
