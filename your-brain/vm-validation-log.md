@@ -214,3 +214,34 @@ Notes:
 
 - This validates the first real multi-worker analysis chain: webhook to changed files to Terraform validation to Checkov scan to GitHub check/comment.
 - The current PR remains intentionally failing on Terraform fmt. A future security-failing fixture should add an Azure resource with a known Checkov violation to validate blocking security findings.
+
+## 2026-06-19 13:15:00 +05:30 - Blocking Checkov Finding Test
+
+Validated:
+
+- Added an intentionally insecure S3 fixture to `example-terraform` PR `#2`.
+- Confirmed the GitHub App webhook triggered the full live analysis chain.
+- Confirmed Terraform validation still ran successfully at the command level while preserving the intentional fmt failure.
+- Confirmed Checkov returned a failed security scan.
+- Confirmed the canonical KairoAI PR comment was updated with blocking security findings.
+- Confirmed no duplicate marked PR comment was created.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `399bc03e70eac3b8414c919d8f975814e0d05e52`
+- Review ID: `81f0817c-f075-4b5b-a8c4-5ab2ac2c0536`
+- Changed Terraform files: `main.tf`, `security_fixture.tf`, `versions.tf`
+- Terraform status: `FAILED`
+- `terraform init -backend=false`: exit code `0`
+- `terraform fmt -check -recursive`: exit code `3`
+- `terraform validate -no-color`: exit code `0`
+- Security status: `FAILED`
+- Security findings: `11`
+- Example blocking findings: `CKV_AWS_54`, `CKV_AWS_53`, `CKV_AWS_55`, `CKV_AWS_56`, `CKV_AWS_145`
+- Canonical marked comment URL: `https://github.com/kairoai-in/example-terraform/pull/2#issuecomment-4748353040`
+
+Notes:
+
+- This proves blocking security findings are visible in the developer PR workflow.
+- Today the single GitHub Check Run remains named `KairoAI Terraform Validation`; a useful next improvement is splitting or renaming checks so Terraform and Security statuses are independently clear in branch protection.
