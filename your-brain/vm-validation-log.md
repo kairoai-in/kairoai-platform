@@ -113,3 +113,28 @@ Notes:
 
 - This completes the first user-visible feedback loop: PR change to Terraform validation to GitHub check result.
 - The next product step can be richer PR comments or adding failure fixtures to validate a blocking check result.
+
+## 2026-06-19 07:59:59 +05:30 - Failing GitHub Check Run Test
+
+Validated:
+
+- Created `kairoai-in/example-terraform` PR `#2` with intentionally unformatted Terraform.
+- Confirmed the GitHub App webhook triggered the full analysis path.
+- Confirmed Terraform Runner returned a failed validation result because `terraform fmt -check -recursive` failed.
+- Confirmed Review Orchestrator persisted the failed result.
+- Confirmed GitHub Check Run `KairoAI Terraform Validation` appears as `fail` on PR `#2`.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Review ID: `1cf52398-4ce0-4e6d-9a02-254e776e80c4`
+- Changed Terraform files: `main.tf`
+- `terraform init -backend=false`: exit code `0`
+- `terraform fmt -check -recursive`: exit code `3`
+- `terraform validate -no-color`: exit code `0`
+- GitHub check state: `fail`
+
+Notes:
+
+- This proves the first merge-gate-ready negative path.
+- PR `#2` is intentionally left failing as a visible test fixture unless we decide to close or fix it.
