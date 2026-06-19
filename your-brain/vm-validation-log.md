@@ -184,3 +184,33 @@ Notes:
 
 - The old unmarked comment remains as a historical artifact from before idempotent comments were implemented.
 - Future runs should reuse the marked comment rather than adding more validation summary comments.
+
+## 2026-06-19 12:58:48 +05:30 - Live Checkov Security Scan Test
+
+Validated:
+
+- Synced `kairoai-security-service`, updated shared contracts, and updated Review Orchestrator code onto the Azure VM.
+- Installed Checkov `3.3.1` into the VM Python virtual environment.
+- Updated the VM runtime launcher to start `kairoai-security-service` on port `8004`.
+- Restarted API Gateway, GitHub Service, Terraform Runner, Security Service, Review Orchestrator, and Celery.
+- Confirmed all `/health` endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed Celery called Terraform Runner and Security Service in the same analysis task.
+- Confirmed Security Service returned `PASSED` with `0` findings for the current null-resource fixture.
+- Confirmed GitHub Check Run remained `FAILURE` because Terraform fmt still fails.
+- Confirmed the canonical marked PR comment was updated instead of creating a duplicate comment.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `bbe6fb07bf52f922a9cfa57f9022e0c86d83b064`
+- Review ID: `51eda3f7-f596-4de1-b694-6af8a5969c56`
+- Terraform status: `FAILED`
+- Security status: `PASSED`
+- Security findings: `0`
+- Canonical marked comment URL: `https://github.com/kairoai-in/example-terraform/pull/2#issuecomment-4748353040`
+
+Notes:
+
+- This validates the first real multi-worker analysis chain: webhook to changed files to Terraform validation to Checkov scan to GitHub check/comment.
+- The current PR remains intentionally failing on Terraform fmt. A future security-failing fixture should add an Azure resource with a known Checkov violation to validate blocking security findings.
