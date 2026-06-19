@@ -657,3 +657,41 @@ Impact:
 - Review Orchestrator persists finding classification results.
 - PR comments now include `New findings`, `Existing findings`, and `Resolved findings` counts.
 - Full default-branch baseline comparison remains a follow-up.
+
+## 2026-06-19 16:15:00 +05:30 - Keep Checkov Primary And Add Scanner Abstraction
+
+Decision:
+
+- Keep Checkov as the primary MVP IaC security scanner.
+- Add a security scanner abstraction and scanner selection config instead of hardwiring the API directly to `CheckovScanner`.
+- Do not add standalone tfsec; prefer Trivy IaC later if a second scanner is needed.
+
+Reason:
+
+- Checkov is already validated end-to-end with Terraform, GitHub checks, annotations, AI recommendations, and finding classification.
+- tfsec has effectively moved into the broader Trivy ecosystem, so standalone tfsec is not the best long-term add.
+- A scanner abstraction lets the security service add Trivy IaC later without changing the API contract.
+
+Impact:
+
+- `kairoai-security-service` now has a `SecurityScanner` protocol and scanner factory.
+- `SECURITY_SCANNERS=checkov` is the default scanner config.
+- Helm dev values explicitly set `SECURITY_SCANNERS=checkov`.
+
+## 2026-06-19 16:20:00 +05:30 - Validate Azure And AWS Checkov Findings
+
+Decision:
+
+- Keep AWS and Azure as first-class MVP provider fixtures.
+- Use intentionally insecure Terraform fixtures in `example-terraform` to validate `CKV_AWS_*` and `CKV_AZURE_*` findings through the same pipeline.
+
+Reason:
+
+- The product direction is Azure/AWS first, with room for other providers.
+- Provider-specific fixtures prove that normalized findings, annotations, AI recommendations, and classification remain provider-flexible.
+
+Impact:
+
+- `example-terraform` PR `#2` now contains AWS S3 and Azure Storage Account security fixtures.
+- The live PR flow produced both AWS and Azure findings in one scan.
+- The PR comment shows Azure findings as new and prior AWS findings as existing.

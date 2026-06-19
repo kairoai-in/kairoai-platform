@@ -380,3 +380,33 @@ Notes:
 
 - This first classifier compares against the latest prior scan for the same PR, so repeated fixture findings are classified as existing.
 - Default-branch baseline classification is still a follow-up and should compare PR findings against the repository baseline after install/merge scans exist.
+
+## 2026-06-19 16:20:00 +05:30 - Azure And AWS Security Fixture Test
+
+Validated:
+
+- Added scanner abstraction to Security Service while keeping Checkov as the active scanner.
+- Added `SECURITY_SCANNERS=checkov` to dev deployment values.
+- Added an intentionally insecure Azure Storage Account fixture to `example-terraform`.
+- Deployed updated Security Service code to the Azure VM and restarted the runtime stack.
+- Confirmed the live PR flow produced both Azure and AWS Checkov findings.
+- Confirmed GitHub Security Check annotations include Azure and AWS files.
+- Confirmed PR comment classification treats Azure findings as new and prior AWS findings as existing.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `b691f9dccec19aacae210e30a023c6ce4e726d71`
+- Security findings: `22`
+- New findings: `11`
+- Existing findings: `11`
+- Security Check annotations count: `22`
+- Azure fixture file: `azure_security_fixture.tf`
+- AWS fixture file: `security_fixture.tf`
+- Example Azure findings: `CKV_AZURE_190`, `CKV_AZURE_59`, `CKV_AZURE_44`, `CKV_AZURE_206`, `CKV_AZURE_33`
+- Example AWS findings: `CKV_AWS_54`, `CKV_AWS_53`, `CKV_AWS_55`, `CKV_AWS_56`, `CKV_AWS_145`
+
+Notes:
+
+- Checkov remains the MVP scanner.
+- Trivy IaC is the preferred future second scanner path if scanner diversity is needed.
