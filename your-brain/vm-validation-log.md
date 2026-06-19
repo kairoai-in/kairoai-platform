@@ -90,3 +90,26 @@ Notes:
 
 - This validates the first real analysis worker path after the original placeholder Celery task.
 - The next useful product step is publishing this result back to GitHub as a Check Run or PR comment.
+
+## 2026-06-19 07:50:54 +05:30 - GitHub Check Run Publishing Test
+
+Validated:
+
+- Added GitHub Service support for installation-scoped Check Run creation.
+- Added Review Orchestrator check publishing after Terraform validation.
+- Restarted the Azure VM runtime stack with the new code.
+- Pushed another update to `kairoai-in/example-terraform` PR `#1`.
+- Confirmed Terraform validation still passed.
+- Confirmed GitHub Service called GitHub Check Runs API successfully.
+- Confirmed `gh pr checks 1 --repo kairoai-in/example-terraform` shows `KairoAI Terraform Validation` as `pass`.
+
+Proof:
+
+- Review ID: `f17b0473-12b4-4d73-ba4a-67cab8cf8496`
+- Check name: `KairoAI Terraform Validation`
+- GitHub check state: `pass`
+
+Notes:
+
+- This completes the first user-visible feedback loop: PR change to Terraform validation to GitHub check result.
+- The next product step can be richer PR comments or adding failure fixtures to validate a blocking check result.

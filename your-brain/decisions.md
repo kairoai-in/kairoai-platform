@@ -426,3 +426,21 @@ Impact:
 - Terraform Runner can clone an installed GitHub App repository using installation-scoped credentials and run `terraform init -backend=false`, `terraform fmt -check -recursive`, and `terraform validate -no-color`.
 - Review Orchestrator exposes `GET /reviews/{review_id}/terraform-validation` for the latest persisted validation result.
 - Local Compose now includes `terraform-runner` on port `8003` and wires `TERRAFORM_RUNNER_URL` into Review Orchestrator and the Celery worker.
+
+## 2026-06-19 07:50:54 +05:30 - Publish Terraform Validation As GitHub Check Run
+
+Decision:
+
+- Publish Terraform validation results back to GitHub as a completed Check Run named `KairoAI Terraform Validation`.
+
+Reason:
+
+- GitHub checks are the clearest MVP feedback surface for pull request validation.
+- Checks can later become required branch protection gates, while PR comments can remain richer human-readable summaries.
+
+Impact:
+
+- GitHub Service now owns installation-scoped Check Run creation.
+- Review Orchestrator publishes the check after Terraform validation is persisted.
+- `PASSED` maps to GitHub `success`, `FAILED` maps to `failure`, and runtime `ERROR` maps to `neutral` for the first MVP behavior.
+- The real `example-terraform` PR flow created a passing `KairoAI Terraform Validation` check on PR `#1`.
