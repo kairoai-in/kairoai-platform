@@ -795,3 +795,25 @@ Impact:
 - `kairoai-review-orchestrator` should support `TASK_DISPATCH_PROVIDER=azure_service_bus`.
 - AKS Helm values should use `SERVICE_BUS_CONNECTION_STRING` and queue `review-analysis`.
 - Terraform/IaC should provision Azure Service Bus namespace, queue, and secret wiring when IaC resumes.
+
+## 2026-06-20 00:30:00 +05:30 - Bootstrap Dev Azure Service Bus
+
+Decision:
+
+- Manually bootstrap Azure Service Bus for dev while Terraform implementation remains paused.
+- Use namespace `sb-kairoai-dev` in resource group `rg-kairoai-dev`.
+- Use queue `review-analysis` for review analysis dispatch.
+- Use a queue-scoped authorization rule `kairoai-review-dispatch` with `Send` and `Listen` rights.
+
+Reason:
+
+- The hosted AKS worker path now depends on Azure Service Bus instead of RabbitMQ.
+- Creating the namespace and queue now unblocks Kubernetes secret wiring and AKS validation.
+- Queue-scoped Send/Listen access is narrower than using namespace root keys.
+
+Impact:
+
+- Review Orchestrator can publish review IDs to Service Bus when `TASK_DISPATCH_PROVIDER=azure_service_bus`.
+- Review Worker can consume `review-analysis` with the same queue-scoped connection string.
+- Runtime secret `service-bus-connection-string` must be added to `kairoai-runtime-secrets`.
+- When Terraform resumes, this manually bootstrapped Service Bus namespace and queue should either be imported into state or replaced intentionally.
