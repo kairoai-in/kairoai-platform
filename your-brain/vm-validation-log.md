@@ -270,3 +270,29 @@ Proof:
 Notes:
 
 - Branch protection can now require Terraform and Security gates independently.
+
+## 2026-06-19 14:39:00 +05:30 - Inline Security Check Annotation Test
+
+Validated:
+
+- Added Check Run annotation forwarding to GitHub Service.
+- Added security finding annotation generation to Review Orchestrator.
+- Deployed updated GitHub Service and Review Orchestrator source to the Azure VM.
+- Restarted the VM runtime stack and confirmed all service health endpoints returned `ok`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed the live analysis task created Terraform and Security Check Runs.
+- Confirmed the Security Check Run includes inline annotations for Checkov findings.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Commit: `474f3f29eb5004f0b3a38d925b3d81caeddffed3`
+- Review ID: `58dcb54a-ae50-441f-80f7-9af0da049239`
+- Security Check Run ID: `82318965052`
+- Security Check Run annotations count: `11`
+- Annotated file: `security_fixture.tf`
+- Example annotations: `CKV_AWS_54`, `CKV_AWS_53`, `CKV_AWS_55`, `CKV_AWS_56`, `CKV_AWS_145`
+
+Notes:
+
+- Terraform check annotations are still pending because Terraform fmt/validate output currently needs a parser to map messages to exact file/line positions.

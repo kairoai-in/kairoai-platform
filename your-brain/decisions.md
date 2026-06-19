@@ -539,3 +539,22 @@ Impact:
 - Review Orchestrator now publishes two Check Runs after a review analysis task finishes.
 - The canonical PR comment still combines Terraform and Security summaries.
 - `example-terraform` PR `#2` now shows both checks failing independently on the same commit.
+
+## 2026-06-19 14:39:00 +05:30 - Add Inline GitHub Check Annotations For Security Findings
+
+Decision:
+
+- Add GitHub Check Run annotations for normalized security findings when a finding has a file path and line number.
+- Start annotations with `KairoAI Security Scan`; defer Terraform fmt/validate annotations until command output parsing is richer.
+
+Reason:
+
+- PR comments are useful summaries, but inline annotations put findings where developers review code.
+- Checkov already provides enough file and line metadata for the first security annotation path.
+- GitHub limits annotations per Check Run request, so the MVP caps annotations at 50.
+
+Impact:
+
+- GitHub Service forwards `output.annotations` when creating Check Runs.
+- Review Orchestrator maps security finding severities to GitHub annotation levels.
+- `example-terraform` PR `#2` shows 11 inline annotations on `security_fixture.tf`.
