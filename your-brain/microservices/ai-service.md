@@ -26,15 +26,19 @@ Generate health scores, merge decisions, summaries, recommendations, and suggest
 
 ## Dependencies
 
-- OpenAI API or configured AI provider.
+- Azure AI Foundry as the primary MVP AI provider.
+- Provider adapter boundary for future AI providers.
 - Shared schemas.
 - Secret provider.
 
 ## Configuration
 
 - `AI_PROVIDER`
-- `OPENAI_API_KEY`
 - `AI_MODEL`
+- `AZURE_AI_FOUNDRY_ENDPOINT`
+- `AZURE_AI_FOUNDRY_API_KEY`
+- `AZURE_AI_FOUNDRY_DEPLOYMENT`
+- `AZURE_AI_FOUNDRY_API_VERSION`
 - `MAX_OUTPUT_TOKENS`
 - `HEALTH_SCORE_CONFIG_PATH`
 

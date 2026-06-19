@@ -578,3 +578,22 @@ Impact:
 - AI enrichment should eventually produce provider-specific remediation examples for Azure and AWS.
 - Governance policies should start with Azure/AWS naming, tagging, region, encryption, and network exposure rules.
 - GCP, Kubernetes, Helm, and other IaC frameworks remain supported by the normalized model but are not first-class MVP polish targets yet.
+
+## 2026-06-19 15:05:00 +05:30 - Use Azure AI Foundry For AI Enrichment
+
+Decision:
+
+- Use Azure AI Foundry as the primary MVP provider for AI-generated explanations, recommendations, and fix suggestions.
+- Keep AI provider configuration behind `AI_PROVIDER` so the service remains adaptable later.
+
+Reason:
+
+- The platform is Azure-first for infrastructure and operations.
+- Azure AI Foundry aligns naturally with Azure Key Vault, Azure identity, and the planned AKS production deployment.
+- Deterministic scanners and policy engines should still decide pass/fail; AI should explain findings and recommend fixes.
+
+Impact:
+
+- `kairoai-ai-service` defaults to `AI_PROVIDER=azure_ai_foundry`.
+- Runtime configuration will use Azure AI Foundry endpoint, deployment/model, API version, and secret-backed credentials.
+- Review Orchestrator should call AI Service after deterministic analysis to enrich PR comments, not to determine merge gates.
