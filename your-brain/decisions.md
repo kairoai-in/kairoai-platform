@@ -695,3 +695,22 @@ Impact:
 - `example-terraform` PR `#2` now contains AWS S3 and Azure Storage Account security fixtures.
 - The live PR flow produced both AWS and Azure findings in one scan.
 - The PR comment shows Azure findings as new and prior AWS findings as existing.
+
+## 2026-06-19 18:25:52 +05:30 - Add Default Branch Security Baselines
+
+Decision:
+
+- Add a repository security baseline path that scans the default branch and stores the result separately from PR scans.
+- Prefer the latest default-branch baseline when classifying PR security findings as new, existing, or resolved.
+
+Reason:
+
+- Comparing only against prior scans for the same PR can hide newly introduced risk after the first run.
+- A clean main-branch baseline lets the PR comment answer the product-critical question: what risk does this change introduce relative to the protected branch?
+
+Impact:
+
+- Shared security scan requests now support `scan_all=true` for full repository scans.
+- Review Orchestrator exposes `POST /baselines/security` and persists repository baseline results.
+- PR finding classification now uses the repository baseline first and falls back to the latest prior PR scan when no baseline exists.
+- The live `example-terraform` PR `#2` now reports all 22 Azure/AWS fixture findings as new against the clean `main` baseline.

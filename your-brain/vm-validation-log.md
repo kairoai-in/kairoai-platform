@@ -410,3 +410,37 @@ Notes:
 
 - Checkov remains the MVP scanner.
 - Trivy IaC is the preferred future second scanner path if scanner diversity is needed.
+
+## 2026-06-19 18:25:52 +05:30 - Default Branch Security Baseline Test
+
+Validated:
+
+- Added full-repository scan support to shared security scan requests with `scan_all=true`.
+- Added `POST /baselines/security` to Review Orchestrator.
+- Deployed updated shared contracts, Security Service, and Review Orchestrator source to the Azure VM.
+- Restarted the VM runtime stack and confirmed all six service health endpoints returned `ok`.
+- Created a clean `main` branch security baseline for `kairoai-in/example-terraform`.
+- Pushed a new update to failing `example-terraform` PR `#2`.
+- Confirmed PR finding classification now prefers the default-branch baseline over prior same-PR scans.
+- Confirmed the canonical PR comment reports all Azure/AWS fixture findings as new against the clean main baseline.
+
+Proof:
+
+- PR: `https://github.com/kairoai-in/example-terraform/pull/2`
+- Baseline branch: `main`
+- Baseline commit: `33ac6b1fc7d65fda0f2d5c10fabb72317835c2a0`
+- Baseline review ID: `5265f19a-8c62-4bfa-8969-fbabc29ce35f`
+- Baseline security status: `PASSED`
+- Baseline findings: `0`
+- PR commit: `a880b9fb5577fc0be5eaa747725c7e0723f511d2`
+- Security findings: `22`
+- New findings: `22`
+- Existing findings: `0`
+- Resolved findings: `0`
+- `KairoAI Terraform Validation`: `FAILURE`
+- `KairoAI Security Scan`: `FAILURE`
+
+Notes:
+
+- The old unmarked KairoAI PR comment remains as a historical artifact from before idempotent comments were implemented.
+- Future runs should continue updating the marked canonical comment.

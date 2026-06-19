@@ -10,6 +10,7 @@ MVP flow to preserve:
 - PR changed Terraform file detection.
 - Terraform validation check and annotations.
 - Checkov security scan check and annotations.
+- Default-branch security baseline classification.
 - Unified idempotent PR comment.
 - PostgreSQL-backed review state.
 - RabbitMQ/Celery async worker flow.
@@ -47,14 +48,14 @@ MVP flow to preserve:
 
 - Azure AI Foundry config wired into AI Service, without blocking deterministic checks.
 - AI enrichment endpoint stub with deterministic fallback.
-- Baseline/new-vs-existing finding schema design.
+- Baseline scheduling/refresh automation beyond the manual MVP endpoint.
 - Basic dashboard placeholder service only if it does not risk deployment scope.
 
 ### Defer Until After June 23
 
 - Full RAG pipeline.
 - GitHub App onboarding UI.
-- Full repository baseline scanning and diff classification.
+- Advanced baseline scheduling, historical trend views, and organization-level baseline policy controls.
 - Production-grade multi-tenant dashboard.
 - Advanced sandbox isolation for customer repository execution.
 - Cost service and governance service full implementation.
