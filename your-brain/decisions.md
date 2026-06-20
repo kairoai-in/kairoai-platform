@@ -858,3 +858,23 @@ Impact:
 - The canonical KairoAI PR comment includes Terraform command exit codes, 22 Checkov findings, new/existing/resolved counts, and AI recommendations.
 - Dashboard planning and implementation can start next using real persisted review data from the AKS-backed flow.
 - Before production, replace the VM reverse proxy bridge with AKS ingress/TLS and move runtime secrets to Azure Key Vault-backed sync.
+
+## 2026-06-20 09:30:00 +05:30 - Start Dashboard Repository
+
+Decision:
+
+- Create `kairoai-in/kairoai-dashboard` as the dedicated Next.js dashboard repository.
+- Start with a typed, static dashboard cockpit based on the AKS-validated PR #2 data shape.
+- Add dashboard CI with `npm ci`, lint, and production build on push and pull request.
+
+Reason:
+
+- The AKS review flow is validated enough to start UI work without guessing at the core product loop.
+- The backend still needs paged review-list and repository-summary APIs, so a typed static slice lets UI/UX move while those APIs catch up.
+- Keeping the dashboard in a separate repo matches the service/repo plan and allows independent frontend delivery.
+
+Impact:
+
+- The first dashboard screen shows review queue, selected review detail, Terraform command status, security finding spotlight, and next backend API dependencies.
+- The dashboard can now evolve in parallel with Review Orchestrator read APIs and future auth/onboarding work.
+- Live data wiring should come after `GET /reviews`, repository summary APIs, and an auth/session boundary are added.
