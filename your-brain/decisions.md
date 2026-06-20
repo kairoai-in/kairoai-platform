@@ -878,3 +878,23 @@ Impact:
 - The first dashboard screen shows review queue, selected review detail, Terraform command status, security finding spotlight, and next backend API dependencies.
 - The dashboard can now evolve in parallel with Review Orchestrator read APIs and future auth/onboarding work.
 - Live data wiring should come after `GET /reviews`, repository summary APIs, and an auth/session boundary are added.
+
+## 2026-06-20 10:02:00 +05:30 - Deploy Dashboard To AKS With Temporary Public IP
+
+Decision:
+
+- Deploy `kairoai-dashboard` to the dev AKS cluster using the shared Helm chart.
+- Expose it temporarily with an Azure LoadBalancer service.
+- Use public IP `20.253.7.219` as the temporary DNS target for `kairoai.in`.
+
+Reason:
+
+- The dashboard needs to be available online quickly while final ingress/TLS architecture is still pending.
+- A dedicated LoadBalancer gives an immediate public endpoint without disturbing the existing GitHub App webhook/API Gateway path.
+
+Impact:
+
+- `kairoai-dashboard` is running in namespace `kairoai` with image `acrkairoaidev.azurecr.io/kairoai-dashboard:dev`.
+- Kubernetes health probes use `/health`.
+- GoDaddy can point the `kairoai.in` apex A record to `20.253.7.219` for temporary HTTP access.
+- This should later be replaced by AKS ingress, TLS, and a planned host split between dashboard and API routes.
