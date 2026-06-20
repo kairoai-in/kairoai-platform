@@ -154,3 +154,18 @@ Move to application deployment readiness while Terraform details are paused:
 4. Use `kairoai-deployments/scripts/create-dev-runtime-secret.ps1` to create `kairoai-runtime-secrets` from local env values and the dev Service Bus queue connection string.
 5. Keep Terraform module implementation paused until exact IaC requirements are confirmed.
 6. Resume `kairoai-infra` only after the Azure resource shape is confirmed.
+
+## 2026-06-20 AKS Validation Pause Point
+
+Status:
+
+- Dev Azure resources are manually bootstrapped and should later be imported into Terraform state or intentionally replaced.
+- AKS namespace `kairoai` is running the active services and Service Bus-backed review worker.
+- `api.kairoai.in` currently reaches AKS through the VM Nginx reverse proxy bridge.
+- `example-terraform` PR `#2` validates the hosted GitHub App flow from webhook to GitHub checks and PR comment.
+- Dev Helm values use `image.pullPolicy=Always` for mutable `:dev` tags to avoid stale node image cache.
+
+Next:
+
+- Pause deeper AKS/IaC work and start `kairoai-dashboard`.
+- Resume infrastructure cleanup with AKS ingress/TLS, Key Vault-backed secrets, and Terraform import/replace decisions after the dashboard shell is underway.

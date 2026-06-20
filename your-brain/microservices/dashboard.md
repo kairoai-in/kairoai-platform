@@ -37,19 +37,20 @@ First user interface:
 - GitHub PR comments.
 - GitHub check runs.
 
-Dashboard should start after the AKS-hosted GitHub review loop works, not before.
+Dashboard implementation can start after the 2026-06-20 AKS validation pause point.
 
-Start the dashboard when these are true:
+Start the dashboard now because these are true:
 
 - The active services are deployed to AKS.
-- GitHub App webhooks are pointed at AKS ingress.
-- PR validation, annotations, AI recommendations, and baseline classification are validated from AKS.
-- Review Orchestrator has stable read APIs for review history, review detail, findings, and repository summaries.
+- GitHub App webhooks reach the AKS API Gateway through the temporary `api.kairoai.in` VM Nginx bridge.
+- PR validation, security findings, AI recommendations, and GitHub checks are validated from AKS on `example-terraform` PR `#2`.
+- Review Orchestrator has read APIs for review detail, Terraform validation, security scan results, and changed Terraform files.
 
 Recommended start date:
 
-- Start UX/API planning immediately after AKS validation.
-- Start the actual `kairoai-dashboard` repo after the June 23 AKS target is stable.
+- Start the actual `kairoai-dashboard` repo next.
+- Keep the first dashboard slice narrow: authenticated shell, review list, review detail, findings table, and links back to GitHub PR/checks.
+- Do not block dashboard start on final Terraform/IaC cleanup, AKS ingress replacement, or Azure AI Foundry production credentials.
 
 Reason:
 

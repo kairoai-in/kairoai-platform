@@ -837,3 +837,24 @@ Impact:
 - `kairoai-deployments/scripts/create-dev-runtime-secret.ps1` creates or updates `kairoai-runtime-secrets`.
 - `kairoai-deployments/envs/dev/runtime-secrets.example.env` documents the required secret keys without storing values.
 - Long-term production should move this to Azure Key Vault-backed secret sync.
+
+## 2026-06-20 08:38:32 +05:30 - Validate AKS Hosted GitHub App Review Flow
+
+Decision:
+
+- Treat the AKS-hosted dev review flow as validated for the current MVP backend pause point.
+- Keep `api.kairoai.in` routed through the VM Nginx reverse proxy to the AKS API Gateway LoadBalancer until AKS ingress/TLS is finalized.
+- Use `image.pullPolicy=Always` in dev Helm values while deployments consume mutable `:dev` image tags.
+
+Reason:
+
+- `example-terraform` PR `#2` successfully triggered the GitHub App webhook through `https://api.kairoai.in/api/github/events`.
+- API Gateway, Review Orchestrator, Azure Service Bus worker, Terraform Runner, Security Service, AI Service, and GitHub Service all completed the review path from AKS.
+- Kubernetes reused stale `:dev` images with `IfNotPresent`; dev needs fresh pulls until immutable image promotion is wired.
+
+Impact:
+
+- PR `#2` now shows split GitHub checks for `KairoAI Terraform Validation` and `KairoAI Security Scan`, both failing as expected for the intentionally insecure fixture.
+- The canonical KairoAI PR comment includes Terraform command exit codes, 22 Checkov findings, new/existing/resolved counts, and AI recommendations.
+- Dashboard planning and implementation can start next using real persisted review data from the AKS-backed flow.
+- Before production, replace the VM reverse proxy bridge with AKS ingress/TLS and move runtime secrets to Azure Key Vault-backed sync.
