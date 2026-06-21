@@ -898,3 +898,26 @@ Impact:
 - Kubernetes health probes use `/health`.
 - GoDaddy can point the `kairoai.in` apex A record to `20.253.7.219` for temporary HTTP access.
 - This should later be replaced by AKS ingress, TLS, and a planned host split between dashboard and API routes.
+
+## 2026-06-21 11:25:00 +05:30 - Enable Azure AI Foundry Runtime With GPT-5 Fallback
+
+Decision:
+
+- Use Azure AI Foundry/OpenAI for live AI recommendations in dev.
+- Keep `gpt-5.5` as the preferred target model for production-quality reasoning.
+- Run dev on `gpt-5.1` now, with `gpt-5` deployed as fallback, because the current subscription has `0` quota for `gpt-5.5` in `eastus`.
+- Keep deterministic recommendation fallback enabled in the AI service for missing credentials, quota failures, invalid model output, or Azure API errors.
+
+Reason:
+
+- KairoAI needs real model-generated explanations and remediation suggestions for security, cost, and governance findings.
+- `gpt-5.5` is the strongest planned model for deeper IaC reasoning, but it cannot be deployed until quota is granted.
+- `gpt-5.1` is available now and is strong enough for the MVP recommendation loop.
+
+Impact:
+
+- Azure OpenAI resource `oai-kairoai-dev` exists in `rg-kairoai-dev`.
+- Deployments `gpt-5.1` and `gpt-5` are available on that resource.
+- AKS secret `kairoai-runtime-secrets` is patched with the Foundry endpoint, API key, deployment `gpt-5.1`, and API version.
+- Live AI service verification returned `provider_used=azure_ai_foundry:gpt-5.1` and `fallback_used=false`.
+- Before switching to `gpt-5.5`, request and assign quota for `gpt-5.5` in Azure, deploy it, then update `azure-ai-foundry-deployment` in the AKS runtime secret.
