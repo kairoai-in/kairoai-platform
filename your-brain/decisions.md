@@ -1007,3 +1007,36 @@ Impact:
 - Hub ACR `acrkairoaihubci.azurecr.io`, Key Vault `kv-kairoai-hub-ci`, and Log Analytics workspace `law-kairoai-hub-ci` are live.
 - Seven hub private DNS zones are live and linked to the hub VNet.
 - Post-apply Terraform plan reports `No changes`.
+
+## 2026-06-22 17:26:03 +05:30 - Apply Test Spoke Foundation Terraform
+
+Decision:
+
+- Implement and apply the first test spoke foundation using remote state in `testtfstate`.
+- Keep AKS, Application Gateway WAF, Front Door routes, Azure AI Foundry, and private endpoint hardening for the next layers.
+- Use Azure PostgreSQL Flexible Server with VNet injection and store the generated admin password in the test Key Vault.
+- Use Azure Service Bus Standard for the test async messaging foundation.
+
+Reason:
+
+- The test subscription needs a stable network, identity, data, messaging, and monitoring base before AKS/App Gateway can be deployed.
+- Peering and hub private DNS links must exist before private runtime dependencies such as PostgreSQL and future private endpoints are reliable.
+- Splitting the foundation from AKS/App Gateway keeps the apply smaller and easier to recover if Azure rejects any network detail.
+
+Impact:
+
+- Test resource group `rg-kairoai-test-ci` is live in Central India.
+- Test VNet `vnet-kairoai-test-ci` is live and peered both directions with the hub VNet.
+- Six test subnets are live:
+  - `snet-aks-system`: `10.20.0.0/22`
+  - `snet-aks-user`: `10.20.16.0/21`
+  - `snet-app-gateway`: `10.20.12.0/24`
+  - `snet-private-endpoints`: `10.20.13.0/24`
+  - `snet-postgres-delegated`: `10.20.14.0/24`
+  - `snet-aci-private`: `10.20.15.0/24`
+- Hub private DNS zones are linked to the test VNet, including `private.postgres.database.azure.com`.
+- Test Key Vault `kv-kairoai-test-ci`, Log Analytics `law-kairoai-test-ci`, Application Insights `appi-kairoai-test-ci`, Service Bus `sb-kairoai-test-ci`, and PostgreSQL Flexible Server `psql-kairoai-test-ci` are live.
+- Service Bus queues `review-jobs` and `analysis-results` are live.
+- PostgreSQL database `kairoai` is live, with public network access disabled.
+- Initial apply recovered from one invalid CIDR alignment issue by moving `snet-aks-user` from `10.20.4.0/21` to `10.20.16.0/21`.
+- Post-apply Terraform plan reports `No changes`.
