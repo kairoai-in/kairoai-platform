@@ -921,3 +921,40 @@ Impact:
 - AKS secret `kairoai-runtime-secrets` is patched with the Foundry endpoint, API key, deployment `gpt-5.1`, and API version.
 - Live AI service verification returned `provider_used=azure_ai_foundry:gpt-5.1` and `fallback_used=false`.
 - Before switching to `gpt-5.5`, request and assign quota for `gpt-5.5` in Azure, deploy it, then update `azure-ai-foundry-deployment` in the AKS runtime secret.
+
+## 2026-06-22 12:31:04 +05:30 - Plan Multi-Subscription Azure Hub-Spoke Target Architecture
+
+Decision:
+
+- Use a three-subscription Azure hub-spoke architecture:
+  - Hub subscription for shared networking, DNS, Terraform state, ACR, Front Door, Firewall, Bastion, and shared platform controls.
+  - Test spoke subscription for end-to-end non-production runtime.
+  - Prod spoke subscription for production runtime plus South India disaster recovery resource group.
+- Use Central India as the primary region and South India as the DR region.
+- Use the production ingress path `Internet -> Azure Front Door -> Application Gateway WAF -> AKS`.
+- Keep Terraform implementation paused until the architecture, naming convention, network design, RBAC model, policy baseline, and remediation plan are reviewed.
+
+Reason:
+
+- KairoAI needs a production-grade Azure layout that separates shared controls from environment runtimes.
+- Hub-spoke networking gives a cleaner boundary for shared DNS, Firewall, Bastion, Front Door, ACR, and Terraform state.
+- Planning first reduces rework before Terraform modules, pipelines, and cross-subscription permissions are created.
+
+Impact:
+
+- New design document created at `your-brain/azure-hub-spoke-infra-design.md`.
+- Terraform work should follow this design after approval.
+- Required inputs before implementation include subscription IDs, tenant confirmation, DNS ownership, AKS private/public API decision, Front Door Private Link decision, DR maturity level, and budget sensitivity.
+
+Follow-up inputs recorded:
+
+- Hub subscription ID: `5b942f88-17e6-4026-ae23-d520365fb916`.
+- Test subscription ID: `6b01db76-626a-44a2-8119-17682410914a`.
+- Prod subscription ID: `a8270be7-dabc-4d92-98db-26a55025b0df`.
+- All three subscriptions are expected to be under the same tenant.
+- Entra ID groups, federated credentials, and role assignments may be created.
+- `kairoai.in` remains registered in GoDaddy; recommended production path is to delegate DNS to Azure DNS.
+- AKS should run in private VNet subnets.
+- Test should use a separate Front Door route.
+- Demo DR default should be budget-aware; recommended first build is Level 2 rather than full warm standby Level 3.
+- Terraform pipelines are on hold until the infrastructure design and first build path are agreed.
