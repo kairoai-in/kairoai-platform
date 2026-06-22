@@ -1068,3 +1068,24 @@ Impact:
   - user pool: `Standard_D2s_v4`, min `1`, max `3`
 - Azure Managed Grafana and Azure Monitor workspace are live for test observability.
 - Terraform state was migrated using `moved` blocks; final test plan reports `No changes`.
+
+## 2026-06-22 19:52:52 +05:30 - Add Feature-Gated Edge, Identity, AI, and Policy Modules
+
+Decision:
+
+- Implement the remaining architecture modules as reusable custom modules before enabling more paid resources.
+- Wire `test` to those modules behind feature flags and maps so the module interfaces are validated without creating costly resources by default.
+- Keep App Gateway WAF, Front Door, and AI Foundry disabled until we explicitly review and approve the next apply.
+
+Reason:
+
+- App Gateway WAF, Front Door Premium, and AI model deployments can create meaningful monthly cost, so the safest workflow is code first, plan second, enable third.
+- Feature-gated modules let `test`, `prod`, and `prod-dr` reuse the same module contracts while keeping environment-specific activation controlled.
+- Managed identity and policy inputs need to support many future identities/assignments, so maps give a clean scalable shape.
+
+Impact:
+
+- Real Terraform modules now exist for Application Gateway WAF, Azure Front Door, managed identities with federated credentials, Azure AI Services/AI Foundry, and Azure Policy assignments.
+- The `test` root now has `edge.tf` and variables for enabling edge ingress, AI Foundry deployments, managed identities, and policy assignments.
+- Defaults keep all newly added paid/edge resources disabled.
+- Terraform validation passes and the final `test` plan reports `No changes`.
