@@ -958,3 +958,25 @@ Follow-up inputs recorded:
 - Test should use a separate Front Door route.
 - Demo DR default should be budget-aware; recommended first build is Level 2 rather than full warm standby Level 3.
 - Terraform pipelines are on hold until the infrastructure design and first build path are agreed.
+
+## 2026-06-22 14:09:56 +05:30 - Prepare Hub Foundation Terraform Plan
+
+Decision:
+
+- Implement the first real hub Terraform root against remote state in `hubtfstate`.
+- Plan the hub foundation first and do not apply until explicitly approved.
+- Create low-risk/shared hub foundation resources before high-cost networking edge resources.
+- Defer Azure Firewall, Bastion, and Azure Front Door from the first apply while keeping their approved names in Terraform outputs.
+
+Reason:
+
+- The hub subscription should establish the shared resource group, VNet, DNS, ACR, logging, and Key Vault foundation before test/prod spokes depend on it.
+- Planning before apply lets us catch naming, provider, and cost issues without creating resources.
+- Deferring Firewall, Bastion, and Front Door keeps early spend controlled while preserving the production architecture path.
+
+Impact:
+
+- `kairoai-infra/environments/hub` now uses backend container `hubtfstate` with key `kairoai/hub/terraform.tfstate`.
+- Terraform plan currently creates 26 hub resources: resource group, VNet, five subnets, public DNS zone, seven private DNS zones, seven private DNS VNet links, Premium ACR, Log Analytics workspace, Key Vault, and Key Vault RBAC assignment.
+- ACR name `acrkairoaihubci` and Key Vault name `kv-kairoai-hub-ci` were checked and are available.
+- No hub foundation resources have been applied yet.
