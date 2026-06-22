@@ -1040,3 +1040,31 @@ Impact:
 - PostgreSQL database `kairoai` is live, with public network access disabled.
 - Initial apply recovered from one invalid CIDR alignment issue by moving `snet-aks-user` from `10.20.4.0/21` to `10.20.16.0/21`.
 - Post-apply Terraform plan reports `No changes`.
+
+## 2026-06-22 19:40:24 +05:30 - Standardize Terraform Custom Modules and Autoscaled Test AKS
+
+Decision:
+
+- Use thin custom Terraform modules from day one for KairoAI infrastructure instead of one large environment file or the obsolete `platform` module.
+- Keep modules explicit and readable for hub-spoke, cross-subscription, RBAC, private DNS, and policy requirements.
+- Use Azure Verified/community modules selectively later only when they reduce work without hiding security-critical behavior.
+- Deploy test AKS through the reusable `modules/aks` module with autoscaling enabled for both system and user pools.
+- Select `Standard_D2s_v4` for AKS node pools after checking Central India SKU/quota availability with Azure CLI.
+
+Reason:
+
+- KairoAI needs the same patterns repeated across `hub`, `test`, `prod`, and `prod-dr`, so reusable modules reduce drift and make reviews easier.
+- Thin custom modules give us precise control over naming, cross-subscription provider aliases, private DNS links, managed identities, and role assignments.
+- The subscription has zero quota for the originally attempted B-series family, while DSv4 quota is available in Central India.
+- Autoscaling from the first AKS build keeps the test cluster production-shaped without forcing fixed node counts.
+
+Impact:
+
+- Active reusable modules now exist for naming, resource groups, networking/subnets, VNet peering, private DNS links, Key Vault, Service Bus, PostgreSQL Flexible Server, monitoring, and AKS.
+- Placeholder module directories now exist for ACR, Firewall, Front Door, Application Gateway WAF, AI Foundry, managed identity, and policy so the repo follows the planned architecture shape.
+- The obsolete `modules/platform` module, including stale RabbitMQ Terraform, was removed because the architecture uses Azure Service Bus.
+- Test AKS `aks-kairoai-test-ci` is live with autoscaling:
+  - system pool: `Standard_D2s_v4`, min `1`, max `2`
+  - user pool: `Standard_D2s_v4`, min `1`, max `3`
+- Azure Managed Grafana and Azure Monitor workspace are live for test observability.
+- Terraform state was migrated using `moved` blocks; final test plan reports `No changes`.
