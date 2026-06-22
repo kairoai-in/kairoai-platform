@@ -980,3 +980,30 @@ Impact:
 - Terraform plan currently creates 26 hub resources: resource group, VNet, five subnets, public DNS zone, seven private DNS zones, seven private DNS VNet links, Premium ACR, Log Analytics workspace, Key Vault, and Key Vault RBAC assignment.
 - ACR name `acrkairoaihubci` and Key Vault name `kv-kairoai-hub-ci` were checked and are available.
 - No hub foundation resources have been applied yet.
+
+## 2026-06-22 14:29:18 +05:30 - Apply Hub Foundation Terraform
+
+Decision:
+
+- Apply the approved hub foundation Terraform plan in the hub subscription.
+- Keep Firewall, Bastion, Front Door, and private endpoint hardening deferred until the spoke foundations and ingress design are ready.
+- Update Terraform to use the non-deprecated subnet private endpoint policy argument after apply.
+
+Reason:
+
+- The hub subscription now needs real shared dependencies before test/prod spoke Terraform can safely reference shared DNS, ACR, logging, and Key Vault.
+- Applying the lower-cost foundation first gives us a stable cross-subscription base without immediately creating the most expensive edge/network appliances.
+- Removing the deprecated subnet argument keeps the module forward-compatible with newer AzureRM provider versions.
+
+Impact:
+
+- Hub resource group `rg-kairoai-hub-ci` is live in Central India.
+- Hub VNet `vnet-kairoai-hub-ci` is live with five planned subnets.
+- Public DNS zone `kairoai.in` is live in Azure DNS. GoDaddy delegation nameservers are:
+  - `ns1-05.azure-dns.com.`
+  - `ns2-05.azure-dns.net.`
+  - `ns3-05.azure-dns.org.`
+  - `ns4-05.azure-dns.info.`
+- Hub ACR `acrkairoaihubci.azurecr.io`, Key Vault `kv-kairoai-hub-ci`, and Log Analytics workspace `law-kairoai-hub-ci` are live.
+- Seven hub private DNS zones are live and linked to the hub VNet.
+- Post-apply Terraform plan reports `No changes`.
