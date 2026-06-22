@@ -224,7 +224,7 @@ Spoke VNets should link to the private DNS zones they require.
 
 Hub should contain shared platform resources:
 
-- Resource group: `rg-kairoai-hub-ci`.
+- Resource group: `rg-kairoai-tfstate-ci`.
 - Hub VNet and subnets.
 - Azure Firewall and firewall policy.
 - Azure Bastion.
@@ -368,10 +368,11 @@ Storage account:
 Suggested state keys:
 
 ```text
-kairoai/hub/terraform.tfstate
-kairoai/test/terraform.tfstate
-kairoai/prod/terraform.tfstate
-kairoai/prod-dr/terraform.tfstate
+hubtfstate/kairoai/hub/terraform.tfstate
+hubtfstate/kairoai/bootstrap/terraform.tfstate
+testtfstate/kairoai/test/terraform.tfstate
+prodtfstate/kairoai/prod/terraform.tfstate
+prodtfstate/kairoai/prod-dr/terraform.tfstate
 ```
 
 Bootstrap caveat:
