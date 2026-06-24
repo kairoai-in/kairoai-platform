@@ -1089,3 +1089,34 @@ Impact:
 - The `test` root now has `edge.tf` and variables for enabling edge ingress, AI Foundry deployments, managed identities, and policy assignments.
 - Defaults keep all newly added paid/edge resources disabled.
 - Terraform validation passes and the final `test` plan reports `No changes`.
+
+## 2026-06-24 13:25:49 +05:30 - Standardize Application CI/CD With GitHub OIDC And ACR
+
+Decision:
+
+- Standardize CI/CD across all nine backend microservice repositories and the dashboard repository.
+- Use sequential PR checks, SonarCloud, Snyk, Slack/email failure notifications, OIDC-based Azure authentication, ACR image push, and Helm test values promotion.
+- Keep `ci/app-pipeline` as the persistent CI/CD branch for now.
+
+Reason:
+
+- KairoAI needs a consistent delivery path before production infrastructure and ArgoCD deployment flows are finalized.
+- GitHub OIDC is safer than static ACR username/password secrets.
+- A shared pattern makes failures easier to debug and makes service rollout predictable.
+
+Impact:
+
+- Backend CI/CD rollout is complete and verified for:
+  - `kairoai-api-gateway`
+  - `kairoai-github-service`
+  - `kairoai-review-orchestrator`
+  - `kairoai-terraform-runner`
+  - `kairoai-security-service`
+  - `kairoai-cost-service`
+  - `kairoai-governance-service`
+  - `kairoai-ai-service`
+  - `kairoai-notification-service`
+- Frontend CI/CD rollout is complete and verified for `kairoai-dashboard`.
+- Each app repository has an Entra app/service principal with GitHub OIDC federated credentials and `AcrPush` on `acrkairoaihubci.azurecr.io`.
+- A stable runbook now exists at `docs/ci-cd-runbook.md`.
+- Private repository branch protection remains process-enforced until the GitHub plan supports required reviews for private repos.
