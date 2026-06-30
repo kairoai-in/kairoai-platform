@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KairoAI - Cloud-Native DevOps Platform</title>
+    <style>
+      :root {
+        --bg: #f4f6f8;
+        --ink: #111318;
+        --muted: #5f6874;
+        --line: #d6dde5;
+        --panel: #ffffff;
+        --black: #050505;
+        --cyan: #00a7c7;
+        --orange: #f47b20;
+        --green: #178a4f;
+        --red: #c9362c;
+        --shadow: 0 28px 80px rgba(13, 25, 42, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at top left, rgba(0, 167, 199, 0.18), transparent 28rem),
+          linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+        color: var(--ink);
+        font-family:
+          "Aptos Display",
+          "Segoe UI",
+          Calibri,
+          system-ui,
+          sans-serif;
+      }
+
+      .deck {
+        display: grid;
+        gap: 48px;
+        padding: 40px;
+      }
+
+      .slide {
+        position: relative;
+        width: min(1280px, calc(100vw - 80px));
+        aspect-ratio: 16 / 9;
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .slide::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, rgba(0, 0, 0, 0.035), transparent 18%),
+          radial-gradient(circle at 88% 12%, rgba(0, 167, 199, 0.12), transparent 18rem),
+          radial-gradient(circle at 92% 88%, rgba(244, 123, 32, 0.10), transparent 17rem);
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        padding: 58px 66px;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 900px;
+        font-size: 76px;
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+      }
+
+      h2 {
+        font-size: 54px;
+        line-height: 0.96;
+        letter-spacing: -0.055em;
+      }
+
+      h3 {
+        font-size: 24px;
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.45;
+      }
+
+      ul {
+        margin: 24px 0 0;
+        padding-left: 22px;
+      }
+
+      li + li {
+        margin-top: 10px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 50px;
+      }
+
+      .logo {
+        display: grid;
+        width: 64px;
+        height: 64px;
+        place-items: center;
+        border-radius: 18px;
+        background:
+          linear-gradient(135deg, rgba(0, 167, 199, 0.9), rgba(6, 19, 31, 0.98) 54%),
+          #071019;
+        color: white;
+        font-weight: 950;
+        letter-spacing: -0.08em;
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+      }
+
+      .brand-name {
+        font-size: 28px;
+        font-weight: 950;
+        letter-spacing: -0.055em;
+      }
+
+      .subtitle {
+        max-width: 760px;
+        margin-top: 24px;
+        font-size: 26px;
+        color: #394250;
+      }
+
+      .author {
+        position: absolute;
+        left: 66px;
+        bottom: 54px;
+        color: var(--muted);
+        font-size: 21px;
+        font-weight: 700;
+      }
+
+      .slide-no {
+        position: absolute;
+        right: 34px;
+        bottom: 28px;
+        color: #9aa4b2;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 34px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        margin-top: 30px;
+      }
+
+      .card {
+        min-height: 142px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.82);
+        padding: 24px;
+      }
+
+      .card.dark {
+        border: none;
+        background: #080a0d;
+      }
+
+      .card.dark h3,
+      .card.dark p,
+      .card.dark li {
+        color: white;
+      }
+
+      .card p {
+        margin-top: 12px;
+        font-size: 18px;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        padding: 10px 16px;
+        color: #202632;
+        font-size: 15px;
+        font-weight: 850;
+      }
+
+      .pill.cyan {
+        border-color: rgba(0, 167, 199, 0.28);
+        background: rgba(0, 167, 199, 0.11);
+      }
+
+      .pill.orange {
+        border-color: rgba(244, 123, 32, 0.28);
+        background: rgba(244, 123, 32, 0.12);
+      }
+
+      .hero-mark {
+        position: absolute;
+        right: -50px;
+        bottom: -88px;
+        color: rgba(0, 0, 0, 0.035);
+        font-size: 320px;
+        font-weight: 950;
+        letter-spacing: -0.12em;
+      }
+
+      .diagram-slide .content {
+        padding: 38px 44px 42px;
+      }
+
+      .diagram-frame {
+        height: calc(100% - 72px);
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: #f8fafc;
+        padding: 16px;
+      }
+
+      .diagram-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .compact h2 {
+        font-size: 48px;
+      }
+
+      .compact p,
+      .compact li {
+        font-size: 18px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 46px 1fr;
+        align-items: start;
+        gap: 16px;
+      }
+
+      .num {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 50%;
+        background: #080a0d;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 900;
+      }
+
+      .step h3 {
+        font-size: 20px;
+      }
+
+      .step p {
+        margin-top: 4px;
+        font-size: 17px;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-top: 28px;
+      }
+
+      .metric {
+        border-radius: 20px;
+        background: #080a0d;
+        padding: 22px;
+      }
+
+      .metric strong {
+        display: block;
+        color: #fff;
+        font-size: 34px;
+        line-height: 1;
+        letter-spacing: -0.05em;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 10px;
+        color: #c9d2dc;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .footer-note {
+        position: absolute;
+        left: 66px;
+        right: 66px;
+        bottom: 48px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+        color: #4c5562;
+        font-size: 18px;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .deck {
+          gap: 0;
+          padding: 0;
+        }
+
+        .slide {
+          width: 100vw;
+          height: 100vh;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+          page-break-after: always;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck">
+      <section class="slide">
+        <div class="content">
+          <div class="brand">
+            <div class="logo">K</div>
+            <div class="brand-name">KairoAI</div>
+          </div>
+          <p class="eyebrow">Cloud-Native DevOps Platform</p>
+          <h1>AI-powered Terraform review and governance for modern cloud teams.</h1>
+          <p class="subtitle">
+            GitHub App based pull-request analysis, Azure-native runtime, AKS microservices, and hub-spoke infrastructure built for repeatable delivery.
+          </p>
+          <div class="author">KairoAI Platform Presentation</div>
+          <div class="hero-mark">AI</div>
+          <div class="slide-no">01 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="content">
+          <p class="eyebrow">Problem Statement</p>
+          <h2>Infrastructure changes are reviewed too late, too manually, and with too little context.</h2>
+          <div class="grid-3">
+            <div class="card">
+              <h3>Review Bottlenecks</h3>
+              <p>Terraform PRs require manual validation across security, cost, governance, and provider-specific best practices.</p>
+            </div>
+            <div class="card">
+              <h3>Tool Fragmentation</h3>
+              <p>Teams jump between Terraform, Checkov, Infracost, GitHub, policy rules, and cloud portals to understand one change.</p>
+            </div>
+            <div class="card">
+              <h3>Missing Explanations</h3>
+              <p>Raw scan output is useful but not enough. Reviewers need prioritized findings, recommendations, and merge guidance.</p>
+            </div>
+          </div>
+          <p class="footer-note">
+            KairoAI focuses first on Azure and AWS Terraform review, with room for additional cloud providers and policy engines.
+          </p>
+          <div class="slide-no">02 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="content">
+          <p class="eyebrow">What Is KairoAI?</p>
+          <h2>A GitHub-native AI review platform for Terraform pull requests.</h2>
+          <div class="grid-2">
+            <div class="card dark">
+              <h3>How it works</h3>
+              <ul>
+                <li>Users sign in with GitHub OAuth.</li>
+                <li>They install the KairoAI GitHub App on selected repos or orgs.</li>
+                <li>PR webhooks trigger Terraform validation, security, cost, governance, and AI analysis.</li>
+                <li>Results appear in GitHub checks, PR comments, annotations, and the dashboard.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>What it produces</h3>
+              <ul>
+                <li>Blocking and non-blocking findings.</li>
+                <li>Provider-aware security checks with Checkov.</li>
+                <li>Cost deltas and resource-level cost breakdowns.</li>
+                <li>Governance verdicts for naming, tags, regions, and module usage.</li>
+                <li>AI-generated recommendations and merge decision support.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="pill-row">
+            <span class="pill cyan">GitHub App</span>
+            <span class="pill cyan">Azure AI Foundry</span>
+            <span class="pill orange">AKS</span>
+            <span class="pill orange">PostgreSQL Flexible Server</span>
+            <span class="pill">Service Bus</span>
+            <span class="pill">Helm + Argo CD</span>
+          </div>
+          <div class="slide-no">03 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide diagram-slide">
+        <div class="content">
+          <p class="eyebrow">Application Architecture</p>
+          <div class="diagram-frame">
+            <img src="./app-arch.svg" alt="KairoAI application architecture diagram" />
+          </div>
+          <div class="slide-no">04 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">Repository And Runtime Design</p>
+          <h2>Split ownership across services, deployments, shared contracts, and infrastructure.</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Application repositories</h3>
+              <ul>
+                <li>`kairoai-dashboard` - Next.js UI and GitHub OAuth flow.</li>
+                <li>FastAPI services - API gateway, GitHub adapter, orchestrator, Terraform runner, security, cost, governance, AI, notification.</li>
+                <li>`kairoai-shared` - schemas, fixtures, event contracts, and common domain models.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Platform repositories</h3>
+              <ul>
+                <li>`kairoai-deployments` - Helm charts, environment values, Argo CD apps, DAST workflow.</li>
+                <li>`kairoai-infra` - Terraform modules, hub/test/prod roots, policy checks, remote state bootstrap.</li>
+                <li>`kairoai-platform` - product context, decisions, diagrams, and architecture documentation.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><strong>10</strong><span>image-producing repos</span></div>
+            <div class="metric"><strong>12</strong><span>prod AKS workloads</span></div>
+            <div class="metric"><strong>3</strong><span>Azure subscriptions</span></div>
+            <div class="metric"><strong>4</strong><span>public app routes</span></div>
+          </div>
+          <div class="slide-no">05 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">CI/CD Pipeline Triggers</p>
+          <h2>Short-lived branches flow through PR validation before images or Helm values move forward.</h2>
+          <div class="timeline">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <h3>Feature branch</h3>
+                <p>Work starts in branches such as `feature/**`, `fix/**`, `ci/**`, `test/**`, or retained `azure/**` branches.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <h3>Pull request to main</h3>
+                <p>Auto-PR workflow opens the PR, branch protection blocks direct pushes, and reviewer approval is required.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <h3>Sequential checks</h3>
+                <p>Lint, tests, build, Docker smoke, SonarCloud, Snyk, and notifications run in a fail-fast style.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">4</div>
+              <div>
+                <h3>Image promotion</h3>
+                <p>Merged code builds immutable ACR images. Releases promote the same image bytes to versioned production tags.</p>
+              </div>
+            </div>
+          </div>
+          <div class="slide-no">06 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide diagram-slide">
+        <div class="content">
+          <p class="eyebrow">CI/CD Architecture</p>
+          <div class="diagram-frame">
+            <img src="./ci-cd-arch.svg" alt="KairoAI CI/CD workflow architecture diagram" />
+          </div>
+          <div class="slide-no">07 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide diagram-slide">
+        <div class="content">
+          <p class="eyebrow">Azure Infrastructure Architecture</p>
+          <div class="diagram-frame">
+            <img src="./infra-arch.svg" alt="KairoAI Azure hub-spoke infrastructure architecture diagram" />
+          </div>
+          <div class="slide-no">08 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">Security Architecture</p>
+          <h2>Identity, secrets, network boundaries, and policy gates are layered across app and infra.</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Identity and access</h3>
+              <ul>
+                <li>GitHub OAuth authenticates dashboard users.</li>
+                <li>GitHub App installations scope repository access per user/org.</li>
+                <li>GitHub Actions uses Azure OIDC instead of long-lived Azure secrets.</li>
+                <li>AKS uses managed identities and RBAC for cloud integration.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Secrets and network</h3>
+              <ul>
+                <li>Runtime secrets live in Azure Key Vault and sync to AKS through the secrets runtime path.</li>
+                <li>PostgreSQL is Azure Flexible Server, not a pod.</li>
+                <li>Key Vault private endpoints are live across hub, test, prod, and prod-DR.</li>
+                <li>App Gateway WAF is currently in Detection mode for prod to avoid false-positive 403s while retaining logs.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footer-note">
+            Current report-only controls include Checkov soft-fail in Terraform PRs, Trivy SARIF evidence, Snyk reports, and OWASP ZAP DAST artifacts.
+          </p>
+          <div class="slide-no">09 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">Governance, Scaling And Cost Strategy</p>
+          <h2>Designed for demo-ready delivery now and production hardening next.</h2>
+          <div class="grid-3">
+            <div class="card">
+              <h3>Governance</h3>
+              <p>PR review, CODEOWNERS, protected branches, Argo CD reconciliation, Terraform OPA checks, and release-based prod promotion.</p>
+            </div>
+            <div class="card">
+              <h3>Scaling</h3>
+              <p>AKS system and user node pools, autoscaling, App Gateway autoscale, Service Bus async processing, and independently scalable microservices.</p>
+            </div>
+            <div class="card">
+              <h3>Cost posture</h3>
+              <p>Hub ACR and shared Front Door avoid duplication. DR is staged carefully, and expensive controls like Firewall/Bastion are deferred unless needed.</p>
+            </div>
+          </div>
+          <div class="pill-row">
+            <span class="pill">Review gates</span>
+            <span class="pill">OPA policy</span>
+            <span class="pill">Argo CD sync</span>
+            <span class="pill">Immutable image promotion</span>
+            <span class="pill">Azure Monitor alerts</span>
+          </div>
+          <div class="slide-no">10 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide diagram-slide">
+        <div class="content">
+          <p class="eyebrow">Terraform Pipeline Architecture</p>
+          <div class="diagram-frame">
+            <img src="./terr-arch.svg" alt="KairoAI Terraform pipeline architecture diagram" />
+          </div>
+          <div class="slide-no">11 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">Remote State And Secret Management</p>
+          <h2>Terraform state is isolated by environment while Azure auth stays secretless.</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Remote state</h3>
+              <ul>
+                <li>Hub subscription stores Terraform state centrally.</li>
+                <li>Containers: `hubtfstate`, `testtfstate`, and `prodtfstate`.</li>
+                <li>Keys isolate hub, bootstrap, test, prod, and prod-DR roots.</li>
+                <li>Azure Blob backend locking protects against concurrent mutation.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Pipeline identity</h3>
+              <ul>
+                <li>GitHub Actions exchanges OIDC tokens with Entra ID.</li>
+                <li>No Azure client secret is stored in GitHub.</li>
+                <li>Terraform identity has subscription Contributor and tfstate blob permissions.</li>
+                <li>User Access Administrator is only for role-assignment operations where required.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footer-note">
+            Target branches map to environments: `hub` -> hub subscription, `test` -> test subscription, and `main` -> prod plus prod-DR.
+          </p>
+          <div class="slide-no">12 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide compact">
+        <div class="content">
+          <p class="eyebrow">Observability And DAST</p>
+          <h2>Runtime health, platform telemetry, and external security testing are part of the platform story.</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Monitoring stack</h3>
+              <ul>
+                <li>Azure Managed Prometheus for AKS metrics.</li>
+                <li>Azure Managed Grafana for dashboards.</li>
+                <li>Log Analytics and Application Insights for logs and app telemetry.</li>
+                <li>Azure Monitor alerts for AKS, PostgreSQL, App Gateway, and Front Door signals.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>DAST evidence</h3>
+              <ul>
+                <li>OWASP ZAP runs from GitHub Actions against dashboard, API, and Argo CD routes.</li>
+                <li>Reports are uploaded as HTML, Markdown, and JSON artifacts.</li>
+                <li>Test and prod targets can be scanned separately through workflow inputs.</li>
+                <li>Results support demo evidence and future hard gates.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="slide-no">13 / 14</div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="content">
+          <p class="eyebrow">Final Platform Outcome</p>
+          <h2>KairoAI brings AI, policy, cost, and security review directly into the Terraform delivery path.</h2>
+          <div class="grid-3">
+            <div class="card dark">
+              <h3>For developers</h3>
+              <p>Fast PR feedback, actionable fixes, and clear merge confidence without leaving GitHub.</p>
+            </div>
+            <div class="card dark">
+              <h3>For platform teams</h3>
+              <p>Central governance, Azure-native operations, repeatable release flows, and auditable evidence.</p>
+            </div>
+            <div class="card dark">
+              <h3>For reviewers</h3>
+              <p>Prioritized findings, AI suggestions, dashboard visibility, and branch-protected approvals.</p>
+            </div>
+          </div>
+          <div class="pill-row">
+            <span class="pill cyan">Terraform intelligence</span>
+            <span class="pill cyan">GitHub-native review</span>
+            <span class="pill orange">Azure hub-spoke</span>
+            <span class="pill orange">AKS microservices</span>
+            <span class="pill">Release-ready pipelines</span>
+          </div>
+          <div class="hero-mark">K</div>
+          <div class="slide-no">14 / 14</div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
