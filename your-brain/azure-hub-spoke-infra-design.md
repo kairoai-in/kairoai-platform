@@ -616,6 +616,15 @@ Recommended defaults if not specified:
 
 `kairoai.in` can remain registered at GoDaddy while Azure manages DNS records.
 
+Current delegated Azure DNS nameservers:
+
+- `ns1-05.azure-dns.com.`
+- `ns2-05.azure-dns.net.`
+- `ns3-05.azure-dns.org.`
+- `ns4-05.azure-dns.info.`
+
+Detailed request flow is documented in `../../kairoai-infra/docs/public-dns-and-ingress-flow.md`.
+
 Recommended approach:
 
 1. Create Azure DNS public zone `kairoai.in` in the hub subscription.
