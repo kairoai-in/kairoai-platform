@@ -1040,3 +1040,83 @@ Impact:
 - PostgreSQL database `kairoai` is live, with public network access disabled.
 - Initial apply recovered from one invalid CIDR alignment issue by moving `snet-aks-user` from `10.20.4.0/21` to `10.20.16.0/21`.
 - Post-apply Terraform plan reports `No changes`.
+
+## 2026-06-22 19:40:24 +05:30 - Standardize Terraform Custom Modules and Autoscaled Test AKS
+
+Decision:
+
+- Use thin custom Terraform modules from day one for KairoAI infrastructure instead of one large environment file or the obsolete `platform` module.
+- Keep modules explicit and readable for hub-spoke, cross-subscription, RBAC, private DNS, and policy requirements.
+- Use Azure Verified/community modules selectively later only when they reduce work without hiding security-critical behavior.
+- Deploy test AKS through the reusable `modules/aks` module with autoscaling enabled for both system and user pools.
+- Select `Standard_D2s_v4` for AKS node pools after checking Central India SKU/quota availability with Azure CLI.
+
+Reason:
+
+- KairoAI needs the same patterns repeated across `hub`, `test`, `prod`, and `prod-dr`, so reusable modules reduce drift and make reviews easier.
+- Thin custom modules give us precise control over naming, cross-subscription provider aliases, private DNS links, managed identities, and role assignments.
+- The subscription has zero quota for the originally attempted B-series family, while DSv4 quota is available in Central India.
+- Autoscaling from the first AKS build keeps the test cluster production-shaped without forcing fixed node counts.
+
+Impact:
+
+- Active reusable modules now exist for naming, resource groups, networking/subnets, VNet peering, private DNS links, Key Vault, Service Bus, PostgreSQL Flexible Server, monitoring, and AKS.
+- Placeholder module directories now exist for ACR, Firewall, Front Door, Application Gateway WAF, AI Foundry, managed identity, and policy so the repo follows the planned architecture shape.
+- The obsolete `modules/platform` module, including stale RabbitMQ Terraform, was removed because the architecture uses Azure Service Bus.
+- Test AKS `aks-kairoai-test-ci` is live with autoscaling:
+  - system pool: `Standard_D2s_v4`, min `1`, max `2`
+  - user pool: `Standard_D2s_v4`, min `1`, max `3`
+- Azure Managed Grafana and Azure Monitor workspace are live for test observability.
+- Terraform state was migrated using `moved` blocks; final test plan reports `No changes`.
+
+## 2026-06-22 19:52:52 +05:30 - Add Feature-Gated Edge, Identity, AI, and Policy Modules
+
+Decision:
+
+- Implement the remaining architecture modules as reusable custom modules before enabling more paid resources.
+- Wire `test` to those modules behind feature flags and maps so the module interfaces are validated without creating costly resources by default.
+- Keep App Gateway WAF, Front Door, and AI Foundry disabled until we explicitly review and approve the next apply.
+
+Reason:
+
+- App Gateway WAF, Front Door Premium, and AI model deployments can create meaningful monthly cost, so the safest workflow is code first, plan second, enable third.
+- Feature-gated modules let `test`, `prod`, and `prod-dr` reuse the same module contracts while keeping environment-specific activation controlled.
+- Managed identity and policy inputs need to support many future identities/assignments, so maps give a clean scalable shape.
+
+Impact:
+
+- Real Terraform modules now exist for Application Gateway WAF, Azure Front Door, managed identities with federated credentials, Azure AI Services/AI Foundry, and Azure Policy assignments.
+- The `test` root now has `edge.tf` and variables for enabling edge ingress, AI Foundry deployments, managed identities, and policy assignments.
+- Defaults keep all newly added paid/edge resources disabled.
+- Terraform validation passes and the final `test` plan reports `No changes`.
+
+## 2026-06-24 13:25:49 +05:30 - Standardize Application CI/CD With GitHub OIDC And ACR
+
+Decision:
+
+- Standardize CI/CD across all nine backend microservice repositories and the dashboard repository.
+- Use sequential PR checks, SonarCloud, Snyk, Slack/email failure notifications, OIDC-based Azure authentication, ACR image push, and Helm test values promotion.
+- Keep `ci/app-pipeline` as the persistent CI/CD branch for now.
+
+Reason:
+
+- KairoAI needs a consistent delivery path before production infrastructure and ArgoCD deployment flows are finalized.
+- GitHub OIDC is safer than static ACR username/password secrets.
+- A shared pattern makes failures easier to debug and makes service rollout predictable.
+
+Impact:
+
+- Backend CI/CD rollout is complete and verified for:
+  - `kairoai-api-gateway`
+  - `kairoai-github-service`
+  - `kairoai-review-orchestrator`
+  - `kairoai-terraform-runner`
+  - `kairoai-security-service`
+  - `kairoai-cost-service`
+  - `kairoai-governance-service`
+  - `kairoai-ai-service`
+  - `kairoai-notification-service`
+- Frontend CI/CD rollout is complete and verified for `kairoai-dashboard`.
+- Each app repository has an Entra app/service principal with GitHub OIDC federated credentials and `AcrPush` on `acrkairoaihubci.azurecr.io`.
+- A stable runbook now exists at `docs/ci-cd-runbook.md`.
+- Private repository branch protection remains process-enforced until the GitHub plan supports required reviews for private repos.

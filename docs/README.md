@@ -4,6 +4,12 @@ This directory stores project documentation that is useful beyond the working me
 
 Use `docs` for stable, shareable documentation such as architecture notes, product specs, API references, setup guides, runbooks, and integration guides.
 
+## Current Docs
+
+- [CI/CD runbook](ci-cd-runbook.md)
+- [GitHub App domain runbook](github-app-domain-runbook.md)
+- [Branch protection notes](branch-protection.md)
+
 ## Suggested Structure
 
 - `architecture/` - system design, service boundaries, data flow, and deployment architecture.
